@@ -282,6 +282,11 @@
       const linkColumnWidth = isExternalJsonData ? 48 : 36; // 12 * no of node columns
       const noOfLinksColumn = isExternalJsonData ? 3 : 2;
       const rectWidth = ((width - 150) - linkColumnWidth) / noOfLinksColumn;
+      const gradientLeft = $rootScope.theme.id === 'light' ? '#ffffff' : 'grey';
+      const gradientRight = $rootScope.theme.id === 'light' ? '#bbbbbb' : 'black'; // #bbbbbb
+      const backgroundStroke = $rootScope.theme.id === 'light' ? '#bbbbbb' : '#808080';
+      const backgroundTitle = $rootScope.theme.id === 'light' ? '#000000' : 'grey';
+      const textColor = $rootScope.theme.id === 'light' ? '#000000' : '#ffffff';
       let backgroundRect = [];
       if (isExternalJsonData) {
         backgroundRect = [{
@@ -366,13 +371,13 @@
       gradient.append('stop')
         .attr('class', 'start')
         .attr('offset', '0%')
-        .attr('stop-color', 'grey')
+        .attr('stop-color', gradientLeft)
         .attr('stop-opacity', 1);
 
       gradient.append('stop')
         .attr('class', 'end')
         .attr('offset', '100%')
-        .attr('stop-color', 'black')
+        .attr('stop-color', gradientRight)
         .attr('stop-opacity', 1);
 
       // If color is not provided as a part of data, then scale will be used
@@ -396,7 +401,7 @@
         .attr("height", height)
         .attr("fill", "url(#svgGradient)")
         .attr("fill-opacity", 0.6)
-        .attr('stroke', '#808080')
+        .attr('stroke', backgroundStroke)
         .append("title")
         .text(d => `${d.name}`);
 
@@ -410,7 +415,7 @@
         })
         .attr("y", 30)
         .attr("text-anchor", "middle")
-        .attr("fill", 'grey')
+        .attr("fill", backgroundTitle)
         .text(d => d.name);
 
       // Rendering Nodes
@@ -482,12 +487,12 @@
         .attr("y", d => (d.y0 + d.y1) / 2)
         .attr("dy", "0.4em")
         .attr("text-anchor", "end")
-        .attr("fill", '#ffffff')
+        .attr("fill", textColor)
         .text(d => d.name)
         .append('tspan')
         .attr('dy', 12)
         .attr('x', d => d.x0 - 15)
-        .attr("fill", '#ffffff')
+        .attr("fill", textColor)
         .attr('font-size', '9px sans-serif')
         .text(d => d.value);
     }
