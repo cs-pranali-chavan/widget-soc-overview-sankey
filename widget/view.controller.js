@@ -7,11 +7,11 @@
 (function () {
   angular
     .module('cybersponse')
-    .controller('sankeyChart100DevCtrl', sankeyChart100DevCtrl);
+    .controller('socOverviewSankey100Ctrl', socOverviewSankey100Ctrl);
 
-  sankeyChart100DevCtrl.$inject = ['$scope', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService'];
+  socOverviewSankey100Ctrl.$inject = ['$scope', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService'];
 
-  function sankeyChart100DevCtrl($scope, config, $http, $q, Query, API, _, currentDateMinusService) {
+  function socOverviewSankey100Ctrl($scope, config, $http, $q, Query, API, _, currentDateMinusService) {
 
     $scope.config = config;
     var sankey;

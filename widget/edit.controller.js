@@ -7,11 +7,11 @@
 (function () {
   angular
     .module('cybersponse')
-    .controller('editSankeyChart100DevCtrl', editSankeyChart100DevCtrl);
+    .controller('editSocOverviewSankey100Ctrl', editSocOverviewSankey100Ctrl);
 
-  editSankeyChart100DevCtrl.$inject = ['$scope', '$uibModalInstance', 'config', 'appModulesService', 'Entity'];
+  editSocOverviewSankey100Ctrl.$inject = ['$scope', '$uibModalInstance', 'config', 'appModulesService', 'Entity'];
 
-  function editSankeyChart100DevCtrl($scope, $uibModalInstance, config, appModulesService, Entity) {
+  function editSocOverviewSankey100Ctrl($scope, $uibModalInstance, config, appModulesService, Entity) {
     $scope.cancel = cancel;
     $scope.save = save;
     $scope.config = config;
