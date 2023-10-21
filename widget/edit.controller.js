@@ -1,7 +1,6 @@
 /* Copyright start
-  Copyright (C) 2008 - 2023 Fortinet Inc.
-  All rights reserved.
-  FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
+  MIT License
+  Copyright (c) 2023 Fortinet Inc
   Copyright end */
 'use strict';
 (function () {
@@ -47,11 +46,8 @@
       var resource = forResource === 'target' ? $scope.config.resource : $scope.config.relation;
       var entity = new Entity(resource);
       entity.loadFields().then(function () {
-        // $scope.params.fields = entity.getFormFields();
         $scope.params[forResource + 'Fields'] = entity.getFormFields();
-        // $scope.params.relationshipFields = entity.getRelationshipFields();
         $scope.params[forResource + 'RelationshipFields'] = entity.getRelationshipFields();
-        // angular.extend(fields, entity.getRelationshipFields());
         $scope.params[forResource + 'FieldsArray'] = entity.getFormFieldsArray();
 
         $scope.params[forResource + 'NodePicklistFields'] = _.filter($scope.params[forResource + 'FieldsArray'], function (field) {

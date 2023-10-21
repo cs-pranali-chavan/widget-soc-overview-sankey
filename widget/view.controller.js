@@ -1,7 +1,6 @@
 /* Copyright start
-  Copyright (C) 2008 - 2023 Fortinet Inc.
-  All rights reserved.
-  FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
+  MIT License
+  Copyright (c) 2023 Fortinet Inc
   Copyright end */
 'use strict';
 (function () {
@@ -20,30 +19,29 @@
     var links = [];
     var nodeColorMap = {};
     $scope.duration = 7;	// Default duration
-    // $scope.config.refreshSankey = refreshSankey;
     $scope.config.buttons = [{
       id: 'btn-7d',
       text: 'Last 7 Days',
-      class: 'btn-default',
       onClick: function () {
-        refreshSankey(7);
+        refreshSankey(7, 'btn-7d');
       },
+      active: true,
       type: 'submit'
     }, {
       id: 'btn-1d',
       text: 'Last 1 Day',
-      class: 'btn-default',
       onClick: function () {
-        refreshSankey(1);
+        refreshSankey(1, 'btn-1d');
       },
+      active: false,
       type: 'submit'
     }, {
       id: 'btn-1h',
       text: 'Last 1 Hour',
-      class: 'btn-default',
       onClick: function () {
-        refreshSankey(0.0417);
+        refreshSankey(0.0417, 'btn-1h');
       },
+      active: false,
       type: 'submit'
     }];
 
@@ -78,6 +76,14 @@
     function refreshSankey(duration) {
       console.log('Duration: ', duration);
       $scope.duration = duration;
+      // Handling button active property
+      $scope.config.buttons.forEach(button => {
+        if (button.id === id) {
+          button.active = true;
+        } else {
+          button.active = false;
+        }
+      });
       cleanChartData();
       fetchData();
     }
