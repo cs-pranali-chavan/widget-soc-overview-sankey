@@ -74,7 +74,6 @@
 
     // Refresh Sankey Chart
     function refreshSankey(duration) {
-      console.log('Duration: ', duration);
       $scope.duration = duration;
       // Handling button active property
       $scope.config.buttons.forEach(button => {
@@ -159,8 +158,7 @@
               nodes.push(nodeData);
             });
           }
-          console.log('Nodes ==> ', nodes);
-
+          
           // Formation of link data
           idIndex = 1;
           // Link data for Source/External Json nodes
@@ -218,8 +216,7 @@
             }
             idIndex++;
           });
-          console.log('Links ==> ', links);
-
+          
           chartData.nodes = nodes;
           chartData.links = links;
 
