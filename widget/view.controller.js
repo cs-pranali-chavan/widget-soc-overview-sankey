@@ -338,9 +338,10 @@
 
       // const rectWidth = ((width - 150) - (12 * backgroundRect.length)) / (backgroundRect.length - 1);
       sankey = d3.sankey()
-        // .nodeSort((a, b) => a.id - b.id)
+        .nodeSort((a, b) => a.id - b.id)
         .nodeId(d => d.id)
         .linkSort(null)
+        .nodeAlign(d3.sankeyLeft) // Align node to the left, default is d3.sankeyJustify. Nodes without any outgoing links are moved as left as possible.
         .nodeWidth(12)
         .nodePadding(10)
         .extent([[150, 70], [width, height - 20]]);
