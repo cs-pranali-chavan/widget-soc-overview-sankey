@@ -8,9 +8,9 @@
     .module('cybersponse')
     .controller('socOverviewSankey100Ctrl', socOverviewSankey100Ctrl);
 
-  socOverviewSankey100Ctrl.$inject = ['$scope', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService'];
+  socOverviewSankey100Ctrl.$inject = ['$scope', '$rootScope', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService'];
 
-  function socOverviewSankey100Ctrl($scope, config, $http, $q, Query, API, _, currentDateMinusService) {
+  function socOverviewSankey100Ctrl($scope, $rootScope, config, $http, $q, Query, API, _, currentDateMinusService) {
 
     $scope.config = config;
     var sankey;
@@ -73,7 +73,7 @@
     }
 
     // Refresh Sankey Chart
-    function refreshSankey(duration) {
+    function refreshSankey(duration, id) {
       $scope.duration = duration;
       // Handling button active property
       $scope.config.buttons.forEach(button => {
