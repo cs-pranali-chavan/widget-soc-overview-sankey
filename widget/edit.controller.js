@@ -14,7 +14,7 @@
     $scope.cancel = cancel;
     $scope.save = save;
     $scope.config = config;
-    $scope.header = $scope.config.title ? 'Edit Sankey Chart' : 'Add Sankey Chart';
+    $scope.header = $scope.config.title ? 'Edit SOC Overview Sankey Chart' : 'Add SOC Overview Sankey Chart';
     $scope.params = {};
     $scope.fetchAttributes = fetchAttributes;
     $scope.setSourceJson = setSourceJson;
