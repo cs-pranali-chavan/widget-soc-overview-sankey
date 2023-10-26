@@ -23,6 +23,9 @@
                     }}</button>
             </div>
         </div>
+        <div data-ng-if="processing">
+            <cs-spinner></cs-spinner>
+        </div>
         <div class="padding-left-lg padding-bottom-lg">
             <div class="charts-background fade-in-animation">
                 <div id="sankeyChart-{{ config.wid }}" style="position: relative;"></div>

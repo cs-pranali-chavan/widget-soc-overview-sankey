@@ -8,16 +8,17 @@
     .module('cybersponse')
     .controller('socOverviewSankey100Ctrl', socOverviewSankey100Ctrl);
 
-  socOverviewSankey100Ctrl.$inject = ['$scope', '$rootScope', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService'];
+  socOverviewSankey100Ctrl.$inject = ['$scope', '$rootScope', '$timeout,', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService'];
 
-  function socOverviewSankey100Ctrl($scope, $rootScope, config, $http, $q, Query, API, _, currentDateMinusService) {
+  function socOverviewSankey100Ctrl($scope, $rootScope, $timeout, config, $http, $q, Query, API, _, currentDateMinusService) {
 
-    $scope.config = config;
     var sankey;
     var chartData = {};
     var nodes = [];
     var links = [];
     var nodeColorMap = {};
+    $scope.config = config;
+    $scope.processing = false;
     $scope.duration = 7;	// Default duration
     $scope.config.buttons = [{
       id: 'btn-7d',
@@ -158,7 +159,7 @@
               nodes.push(nodeData);
             });
           }
-          
+
           // Formation of link data
           idIndex = 1;
           // Link data for Source/External Json nodes
@@ -216,12 +217,19 @@
             }
             idIndex++;
           });
-          
+
           chartData.nodes = nodes;
           chartData.links = links;
 
           renderSankeyChart();
+        } else {
+          renderNoRecordMessage();
         }
+      }, function (error) {
+        $scope.processing = false;
+        renderNoRecordMessage();
+      }).finally(function () {
+        $scope.processing = false;
       });
     }
 
@@ -276,6 +284,39 @@
       });
 
       return defer.promise;
+    }
+
+    function renderNoRecordMessage() {
+      const width = angular.element(document.querySelector('#sankeyChart-' + $scope.config.wid))[0].clientWidth;
+      const height = 50;
+      const backgroundColor = $rootScope.theme.id === 'light' ? '#f2f2f3' : $rootScope.theme.id === 'dark' ? '#1d1d1d' : '#212c3a';
+      const textColor = $rootScope.theme.id === 'light' ? '#000000' : '#ffffff';
+      const strokeColor = $rootScope.theme.id === 'light' ? '#e4e4e4' : '#000000';
+      d3.select('#sankeyChart-' + $scope.config.wid).selectAll('svg').remove();
+
+      const svg = d3.selectAll('#sankeyChart-' + $scope.config.wid)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+      // Display message and return if no records found
+      svg.append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('rx', 4)
+        .attr('width', width)
+        .attr('height', height)
+        .attr('stroke', strokeColor)
+        .attr('fill', backgroundColor);
+
+      svg.append('text')
+        .text('No records found !')
+        .attr('x', 20)
+        .attr('y', 30)
+        .attr('font-size', 16)
+        .attr('text-anchor', 'start')
+        .attr('text-height', 20)
+        .attr('fill', textColor);
     }
 
     function renderSankeyChart() {
@@ -502,8 +543,11 @@
     }
 
     function _init() {
-      loadJs('https://cdnjs.cloudflare.com/ajax/libs/d3-sankey/0.12.3/d3-sankey.min.js');
-      fetchData();
+      $scope.processing = true;
+      $timeout(function () {
+        loadJs('https://cdnjs.cloudflare.com/ajax/libs/d3-sankey/0.12.3/d3-sankey.min.js');
+        fetchData();
+      }, 1000);
     }
 
     _init();
