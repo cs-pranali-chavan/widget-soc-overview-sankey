@@ -8,7 +8,7 @@
     .module('cybersponse')
     .controller('socOverviewSankey100Ctrl', socOverviewSankey100Ctrl);
 
-  socOverviewSankey100Ctrl.$inject = ['$scope', '$rootScope', '$timeout,', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService'];
+  socOverviewSankey100Ctrl.$inject = ['$scope', '$rootScope', '$timeout', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService'];
 
   function socOverviewSankey100Ctrl($scope, $rootScope, $timeout, config, $http, $q, Query, API, _, currentDateMinusService) {
 
@@ -98,6 +98,7 @@
 
     function fetchData() {
       getResourceAggregate().then(function (result) {
+        $scope.processing = false;
         if (result && result['hydra:member'] && result['hydra:member'].length > 0) {
           let idIndex = 1;
           let nodesMap = {};
