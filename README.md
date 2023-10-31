@@ -16,3 +16,6 @@
 ## Overview
 
 The SOC Overview Sankey widget provides ability to visualise flow between nodes in a directed acyclic network.
+
+| [Installation](./docs/setup.md#installation) | [Configuration](./docs/setup.md#configuration) | [Usage](./docs/usage.md) |
+|----------------------------------------------|------------------------------------------------|--------------------------|
