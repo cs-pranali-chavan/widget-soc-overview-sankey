@@ -1,4 +1,4 @@
-## Release Information
+# Release Information
 
 - **Version**: 1.0.0
 
@@ -9,9 +9,6 @@
 - **Compatibility**: 7.4.2 and later
 
 - **Applicable**: Dashboards and Reports
-
-- [Release Notes](./widget/release_notes.md)
-
 
 ## Overview
 
