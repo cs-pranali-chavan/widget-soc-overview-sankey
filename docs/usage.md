@@ -9,11 +9,11 @@ You can add this view to a dashboard, or report.
 
 ## Features
 
-- Visualize relationship data as per duration. Standard durations are provided upfront as a part of widget like 7 Days, 1 Day, and 1 Hour. Other filter specific configurations can be done by editing settings. 
+- Visualize relationship data as per duration. User can select from standard durations provided as part of widget like 7 Days, 1 Day, and 1 Hour. 
 
-- Configure the widget by selecting module-wise source node, target node, relationship node and setting filters to retrieve the required data.
+- Configure the widget by selecting source node, target node, relationship node and setting filters to retrieve the required data.
 
-- Colors will be picked as per configured in picklist.
+- The links colors will be picked as per picklist items configuration.
 
 ## SOC Overview Sankey Widget
 
@@ -33,7 +33,7 @@ You can add this view to a dashboard, or report.
 
 8. Select the relationship module, to group data to visualize as per relation, in the **Relationship Resource** field.
 
-9. Select the picklist field of selected relationship resource to group data for relationship nodes, in the **Relationship Nodes** field.
+9. Select the picklist field of selected relationship resource to group the data for relationship nodes, in the **Relationship Nodes** field.
 
 10. Input JSON data to render outer source nodes and linking with modules source, in the **External Source JSON** field.
 
@@ -46,7 +46,7 @@ The following image displays a **SOC Overview Sankey** widget based on an exampl
 In above example, clicking **1 Day** displays a data for last 1 day. Same for **1 Hour** it shows data for last 1 Hour. **7 Days** is a default behavior while initial rendering.
 
 <table>
-    <td><strong>NOTE</strong></td><td>If for any specific duration selection there is no data, then the <strong>SOC Overview Sankey</strong> widget displays the following message:<br><br>
+    <td><strong>NOTE</strong></td><td>If for any specific duration selection if there is no data, then the <strong>SOC Overview Sankey</strong> widget displays the following message:<br><br>
     <strong>No records found!</strong></td>
 </table>
 
