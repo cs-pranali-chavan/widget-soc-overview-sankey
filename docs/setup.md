@@ -14,19 +14,20 @@ Following table helps customize the **SOC Overview Sankey** widget:
 
 | Fields                                     | Description                                                                                                                                                                                                                     |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Title                                      | Specify a title.                                                                                                                                                      |
+| Title                                      | Specify a title for the SOC Overview Sankey.                                                                                                                                                      |
 | Resource                                   | Select the module.                                                                                                                                                       |
 | Filter Criteria                            | Define the filter criteria using which to filter the data retrieved by this widget.                                                                                                                                             |
 | Source Nodes                               | Select the field to render source nodes.                                                                                                                                                               |
 | Target Nodes                               | Select the picklist to render target nodes.                                                                                                                                                    |
-| Relationship Resource                      | Choose the relationship module to get picklist details for relationship nodes.                                                                                                                                                                        |
+| Relationship Resource                      | Select the relationship module to get picklist details for relationship nodes.                                                                                                                                                                        |
 | Relationship Nodes                         | Select the picklist to render relationship nodes.                                                          |
-| External Source JSON                       | Enter JSON data to render sources which generates events.                                                                                       |
+| External Source JSON                       | Enter JSON data to render sources which generates an events.                                                                                       |
 
 ## External Source JSON format
+Here JSON object requires 2 array properties, Nodes and Links.
 
-Here JSON object requires 2 array properties. Nodes and Links.
 Sample JSON format:
+```JSON
 {
     "nodes": [
         {
@@ -34,10 +35,7 @@ Sample JSON format:
         },
         {
             "name": "Fortinet Endpoints"
-        },
-        .
-        .
-        .
+        }
     ],
     "links": [
         {
@@ -49,13 +47,10 @@ Sample JSON format:
             "source": "Fortinet Networks",
             "target": "ArcSight",
             "total": 67
-        },
-        .
-        .
-        .
+        }
     ]
 }
-
+```
 
 | [Usage](./usage.md) |
 | ------------------- |
