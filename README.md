@@ -12,7 +12,9 @@
 
 ## Overview
 
-The FortiSOAR&trade; Overview Sankey widget helps visualize the flow between nodes in a directed acyclic network. Sankey diagrams are a data visualization technique or flow diagram that emphasizes flow, movement, or change from one state to another.The width of the arrows is proportional to the flow rate of the depicted extensive property.
+The FortiSOAR&trade; Overview Sankey widget helps visualize the flow between nodes in a directed acyclic network. Sankey diagrams are a data visualization technique or flow diagram that emphasizes flow, movement, or change from one state to another. The width of the arrows is proportional to the flow rate of the depicted extensive property.
+
+![A dashboard with a Sankey chart](./docs/res/sankey-with-custom-data.png)
 
 A Sankey chart widget can be a valuable visualization tool in FortiSOAR for illustrating the flow of data or processes between different stages. In FortiSOAR&trade;, they can help represent the flow of security incidents, alerts, or data through various automated processes:
 
@@ -36,9 +38,7 @@ A Sankey chart widget can be a valuable visualization tool in FortiSOAR for illu
    - Customize the Sankey chart to display key performance indicators (KPIs) and metrics relevant to the FortiSOAR&trade;'s goals, such as incident resolution time, automation efficiency, or alert response times.
 
 8. **Real-time Monitoring:**
-   - Integrate the Sankey chart into a real-time monitoring dashboard within FortiSOAR to provide FortiSOAR&trade; analysts with a dynamic and up-to-date view of the security operations flow.
-
-When implementing a Sankey chart widget in FortiSOAR, ensure that it supports dynamic updates and real-time data feeds to provide a current and accurate representation of the FortiSOAR&trade; workflow. Additionally, customize the chart to meet the specific needs and processes of your FortiSOAR&trade; environment.
+   - Integrate the Sankey chart into a real-time monitoring dashboard within FortiSOAR&trade; to provide analysts with a dynamic and up-to-date view of the security operations flow.
 
 | [Installation](./docs/setup.md#installation) | [Configuration](./docs/setup.md#configuration) | [Usage](./docs/usage.md) |
 |----------------------------------------------|------------------------------------------------|--------------------------|

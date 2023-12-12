@@ -5,21 +5,21 @@
 
 The **SOC Overview Sankey** widget helps visualize relationship data as per behavior. For example, viewing the data as per status of related incidents of alerts group by source and severity.
 
-You can add this view to a dashboard, or report.
+You can add this view to a dashboard, or a report.
 
 ## Visualize Relationship Data for a Preset Interval
 
-You can select from following options:
+- You can select from following options:
 
-- 7 Days
-- 1 Day
-- 1 Hour
+    - 7 Days
+    - 1 Day
+    - 1 Hour
 
-    ![](./res/sankey-chart-time-intervals.png)
-<!-- 
-- Configure the widget by selecting source node, target node, relationship node and setting filters to retrieve the required data.
+        ![](./res/sankey-chart-time-intervals.png)
 
-- The links colors will be picked as per picklist items configuration. -->
+- Configure the widget by selecting source node, target node, relationship node, and setting filters to retrieve the required data.
+
+- The links colors are picked as per picklist items configuration.
 
 ## SOC Overview Sankey Widget
 
@@ -43,7 +43,7 @@ You can select from following options:
 
     ![](./res/sankey-edit-04.png)
 
-6. Select the text field to be grouped for source nodes, in the **Source Nodes** field.
+6. Select the field to group data for source nodes, in the **Source Nodes** field.
 
     ![](./res/sankey-edit-05.png)
 
@@ -69,11 +69,11 @@ The following image displays a **SOC Overview Sankey** widget based on an exampl
 
 ![Displaying the SOC Overview Sankey Chart on a Dashboard](./res/soc-overview-sankey.png)
 
-1. Click **1 Day** to display data for the last 1 day.
+1. Click **7 Days** to display data for the last 7 days. This option is a default selection for the initial rendering.
 
-2. Click **1 Hour** to display data for the last 1 Hour.
+2. Click **1 Day** to display data for the last 1 day.
 
-3. Click **7 Days** to display data for the last 7 days. This option is a default selection for the initial rendering.
+3. Click **1 Hour** to display data for the last 1 Hour.
 
 <table>
     <th>NOTE</th>
