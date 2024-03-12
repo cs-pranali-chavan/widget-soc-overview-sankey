@@ -1,46 +1,50 @@
 /* Copyright start
   MIT License
-  Copyright (c) 2023 Fortinet Inc
+  Copyright (c) 2024 Fortinet Inc
   Copyright end */
 'use strict';
 (function () {
   angular
     .module('cybersponse')
-    .controller('socOverviewSankey100Ctrl', socOverviewSankey100Ctrl);
+    .controller('socOverviewSankey200Ctrl', socOverviewSankey200Ctrl);
 
-  socOverviewSankey100Ctrl.$inject = ['$scope', '$rootScope', '$timeout', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService'];
+  socOverviewSankey200Ctrl.$inject = ['$scope', '$rootScope', 'config', 'widgetBasePath', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService', 'PagedCollection'];
 
-  function socOverviewSankey100Ctrl($scope, $rootScope, $timeout, config, $http, $q, Query, API, _, currentDateMinusService) {
+  function socOverviewSankey200Ctrl($scope, $rootScope, config, widgetBasePath, $http, $q, Query, API, _, currentDateMinusService, PagedCollection) {
 
     var sankey;
     var chartData = {};
     var nodes = [];
     var links = [];
-    var nodeColorMap = {};
+    var nodeColorMap = [];
+    var noOfSeries = 0;
+    var backgroundArea = [];
+    var fileLoadDefer = $q.defer();
     $scope.config = config;
+    $scope.moduleType = $scope.config.moduleType;
     $scope.processing = false;
-    $scope.duration = 7;	// Default duration
+    $scope.duration = 90;	// Default duration
     $scope.config.buttons = [{
-      id: 'btn-7d',
-      text: 'Last 7 Days',
+      id: 'btn-6m',
+      text: 'Last 6 Months',
       onClick: function () {
-        refreshSankey(7, 'btn-7d');
+        refreshSankey(90, 'btn-6m');
       },
       active: true,
       type: 'submit'
     }, {
-      id: 'btn-1d',
-      text: 'Last 1 Day',
+      id: 'btn-3m',
+      text: 'Last 3 Months',
       onClick: function () {
-        refreshSankey(1, 'btn-1d');
+        refreshSankey(60, 'btn-3m');
       },
       active: false,
       type: 'submit'
     }, {
-      id: 'btn-1h',
-      text: 'Last 1 Hour',
+      id: 'btn-30d',
+      text: 'Last 30 Days',
       onClick: function () {
-        refreshSankey(0.0417, 'btn-1h');
+        refreshSankey(30, 'btn-30d');
       },
       active: false,
       type: 'submit'
@@ -50,18 +54,20 @@
       nodes = [];
       links = [];
       chartData = {};
-      nodeColorMap = {};
+      nodeColorMap = [];
     }
 
     function getFilters() {
       let frontFilter = {};
       frontFilter.logic = 'AND';
-      frontFilter.filters = [{
-        field: 'createDate',
-        operator: 'gte',
-        value: currentDateMinusService($scope.duration),
-        type: 'datetime'
-      }];
+      if (config.entityTrackable) {
+        frontFilter.filters = [{
+          field: 'createDate',
+          operator: 'gte',
+          value: currentDateMinusService($scope.duration),
+          type: 'datetime'
+        }];
+      }
 
       let dataFilters = $scope.config.filters ? angular.copy($scope.config.filters) : {};
       if (dataFilters.filters) {
@@ -85,7 +91,12 @@
         }
       });
       cleanChartData();
-      fetchData();
+      if ($scope.config.moduleType === 'Across Modules') {
+        fetchData();
+      }
+      else {
+        populateCustomData();
+      }
     }
 
     // Load External JS Files
@@ -96,144 +107,128 @@
       document.getElementsByTagName("head")[0].appendChild(script);
     }
 
+    //fetch live data
     function fetchData() {
       getResourceAggregate().then(function (result) {
         $scope.processing = false;
         if (result && result['hydra:member'] && result['hydra:member'].length > 0) {
-          let idIndex = 1;
-          let nodesMap = {};
-          // Form JSON Data
-          const sourceNodes = _.filter(_.map(result['hydra:member'], item => item.source), (item, index, arr) => item !== null && arr.indexOf(item) == index);
-          const resourceNodes = _.filter(_.map(result['hydra:member'], item => item.target), (item, index, arr) => item !== null && arr.indexOf(item) == index);
-          const relationNodes = _.filter(_.map(result['hydra:member'], item => item.relation), (item, index, arr) => item !== null && arr.indexOf(item) == index);
-          sourceNodes.forEach(node => {
-            nodesMap['s_' + node] = idIndex;
-            nodes.push({
-              "name": node,
-              "id": idIndex++
-            });
-          });
-          resourceNodes.forEach(node => {
-            nodesMap['t_' + node] = idIndex;
-            nodes.push({
-              "name": node,
-              "id": idIndex++
-            });
-          });
-          relationNodes.forEach(node => {
-            nodesMap['r_' + node] = idIndex;
-            nodes.push({
-              "name": node,
-              "id": idIndex++
-            });
-          });
-
-          // Color Mapping
-          result['hydra:member'].forEach(item => {
-            if (item.targetColor) {
-              nodeColorMap[item.target] = item.targetColor;
-            }
-            if (item.relationColor) {
-              nodeColorMap[item.relation] = item.relationColor;
-            }
-          });
-          nodes.forEach(node => {
-            if (nodeColorMap[node.name]) {
-              node.color = nodeColorMap[node.name];
-            }
-          });
-
-          // Append input JSON data for Source/External Json nodes
-          // ToDo: Add API call to fetch JSON data in global variable, if API fail, then accept data from JSON field
-          let sourceData = $scope.config.sourceJson;
-          if (sourceData.nodes && sourceData.nodes.length > 0) {
-            sourceData.nodes.forEach(node => {
-              nodesMap['o_' + node.name] = idIndex;
-              let nodeData = {
-                "name": node.name,
-                "id": idIndex++
-              };
-              if (node.color) {
-                nodeColorMap[node.name] = node.color;
-                nodeData.color = node.color;
-              }
-              nodes.push(nodeData);
-            });
-          }
-
-          // Formation of link data
-          idIndex = 1;
-          // Link data for Source/External Json nodes
-          if (sourceData.links && sourceData.links.length > 0) {
-            sourceData.links.forEach(link => {
-              let id = idIndex;
-              if (link.source && link.target && nodesMap['s_' + link.target]) {
-                let linkData = {
-                  "source": nodesMap['o_' + link.source],
-                  "target": nodesMap['s_' + link.target],
-                  "value": link.total,
-                  "id": id
-                };
-                // Will not have any color for source, so below part is not required, color will be picked from scale
-                /* if (nodeColorMap[link.target]) {
-                  linkData.color = nodeColorMap[link.target];
-                }*/
-                links.push(linkData);
-                idIndex++;
-              }
-            });
-          }
-
-          // Append link data for API response
-          result['hydra:member'].forEach(link => {
-            let id = idIndex;
-            if (link.source && link.target) {
-              let linkIndex = _.findIndex(links, (obj => obj.source === nodesMap['s_' + link.source] && obj.target === nodesMap['t_' + link.target]));
-              if (linkIndex !== -1) {
-                links[linkIndex].value = links[linkIndex].value + link.total;
-              } else {
-                let linkData = {
-                  "source": nodesMap['s_' + link.source],
-                  "target": nodesMap['t_' + link.target],
-                  "value": link.total,
-                  "id": id
-                };
-                if (nodeColorMap[link.target]) {
-                  linkData.color = nodeColorMap[link.target];
-                }
-                links.push(linkData);
-              }
-            }
-            if (link.target && link.relation) {
-              let linkData = {
-                "source": nodesMap['t_' + link.target],
-                "target": nodesMap['r_' + link.relation],
-                "value": link.total,
-                "id": id
-              };
-              if (nodeColorMap[link.target]) {
-                linkData.color = nodeColorMap[link.relation];
-              }
-              links.push(linkData);
-            }
-            idIndex++;
-          });
-
-          chartData.nodes = nodes;
-          chartData.links = links;
-
-          renderSankeyChart();
+          let dataToPlot = result['hydra:member'];
+          createDataToPlot(dataToPlot);
         } else {
-          renderNoRecordMessage();
+          renderNoRecordMessage('No records found !');
         }
       }, function (error) {
         $scope.processing = false;
-        renderNoRecordMessage();
+        renderNoRecordMessage('No records found !');
       }).finally(function () {
         $scope.processing = false;
       });
     }
 
+    function createDataToPlot(dataToPlot) {
+      let idIndex = 0;
+      let nodesMap = [];
+      let seriesArray = [];
+      noOfSeries = $scope.config.layers.length + 1;
+      let seriesNameArray = [];
+      backgroundArea = [];
+      // Form JSON Data
+      for (var i = 0; i < noOfSeries; i++) {
+        seriesNameArray.push(['series_' + i]);
+        seriesArray.push(_.filter(_.map(dataToPlot, item => item['series_' + i]), (item, index, arr) => item !== null && arr.indexOf(item) == index));
+      };
+      seriesArray.forEach((element, s) => {
+        if (element.length > 0) {
+          if ($scope.config.moduleType === 'Across Modules' && $scope.config.layers[s]) {
+            backgroundArea.push({ 'label': $scope.config.layers[s]['label'] });
+          }
+          else {
+            if (s < (seriesArray.length - 1)) {
+              backgroundArea.push({ 'label': seriesNameArray[s] });
+            }
+          }
+          element.forEach((node, i) => {
+            nodesMap.push({
+              'name': node + '_' + s,
+              'idIndex': idIndex
+            });
+            nodes.push({
+              "name": node,
+              "id": idIndex++
+            });
+          });
+        }
+      });
+      dataToPlot.forEach((item, index) => {
+        for (let c = 0; c < seriesNameArray.length; c++) {
+          if (item[seriesNameArray[c] + '_color']) {
+            nodeColorMap[item[seriesNameArray[c]]] = item[seriesNameArray[c] + '_color'];
+          }
+          else {
+            nodeColorMap[item[seriesNameArray[c]]] = getRandomColor();
+          }
+        }
+      });
+      nodes.forEach(node => {
+        if (nodeColorMap[node.name]) {
+          node.color = nodeColorMap[node.name];
+        }
+      });
+      //fetchJSONData();
+      // Append input JSON data for Source/External Json nodes
+      // ToDo: Add API call to fetch JSON data in global variable, if API fail, then accept data from JSON field
+
+      // Append link data for API response
+      dataToPlot.forEach((link, index) => {
+        for (let c = 0; c < seriesNameArray.length; c++) {
+          if (link[seriesNameArray[c]] && link[seriesNameArray[c + 1]]) {
+            let linkData = {
+              "source": _.filter(nodesMap, { 'name': link[seriesNameArray[c]] + '_' + c })[0]['idIndex'],
+              "target": _.filter(nodesMap, { 'name': link[seriesNameArray[c + 1]] + '_' + (c + 1) })[0]['idIndex'],
+              "value": link.total,
+              "id": index
+            };
+            if (nodeColorMap[link[seriesNameArray[c]]]) {
+              linkData.color = nodeColorMap[link[seriesNameArray[c + 1]]];
+            }
+            links.push(linkData);
+          }
+        }
+      });
+
+      if (nodes.length > 0 && links.length > 0) {
+        chartData.nodes = nodes;
+        chartData.links = links;
+        renderSankeyChart();
+      } else {
+        renderNoRecordMessage('Nodes and Links not created by the given data')
+      }
+
+    }
+
+    //to populate data for custom module
+    function populateCustomData() {
+      var filters = {
+        query: $scope.config.query
+      };
+      var pagedTotalData = new PagedCollection($scope.config.customModule, null, null);
+      pagedTotalData.loadByPost(filters).then(function () {
+        if (pagedTotalData.fieldRows.length === 0) {
+
+          return;
+        }
+        var data = pagedTotalData.fieldRows[0][$scope.config.customModuleField].value;
+        if (!data) {
+          data = {};
+        } else {
+          $scope.processing = false;
+          chartData = data['data'];
+          createDataToPlot(chartData);
+        }
+      })
+    }
+
+    //API payload
     function getResourceAggregate() {
       var defer = $q.defer();
       var dataFilters = getFilters();
@@ -247,36 +242,39 @@
             'operator': 'countdistinct',
             'field': '*',
             'alias': 'total'
-          },
-          {
-            'operator': 'groupby',
-            'alias': 'source',
-            'field': $scope.config.sourceNodesField
-          },
-          {
-            'operator': 'groupby',
-            'alias': 'target',
-            'field': $scope.config.targetNodesField + '.itemValue'
-          },
-          {
-            'operator': 'groupby',
-            'alias': 'relation',
-            'field': $scope.config.relation + '.' + $scope.config.relationshipNodesField + '.itemValue'
-          },
-          {
-            'operator': 'groupby',
-            'alias': 'targetColor',
-            'field': $scope.config.targetNodesField + '.color'
-          },
-          {
-            'operator': 'groupby',
-            'alias': 'relationColor',
-            'field': $scope.config.relation + '.' + $scope.config.relationshipNodesField + '.color'
           }
         ],
         relationship: true,
         filters: [dataFilters]
       };
+      var elementIndex = 0;
+      for (var i = 0; i < config.layers.length; i++) {
+        let currentLayer = config.layers[i];
+        //if - else to check if it is the 1st layer or not
+        if (currentLayer['sourceNodesField'] !== '') {
+          queryObject.aggregates.push({
+            'operator': 'groupby',
+            'alias': 'series_' + elementIndex,
+            'field': currentLayer['sourceNodesField']
+          });
+          if (currentLayer['targetNodeSubField'] === '') {
+            elementIndex++;
+            pushTargetNodes(queryObject, elementIndex, currentLayer);
+          } else {
+            elementIndex++;
+            pushTargetSubNodes(queryObject, elementIndex, currentLayer);
+          }
+        } else {
+          //var prev = i-1;
+          elementIndex++;
+          if (currentLayer['targetNodeSubField'] === '') {
+            pushTargetNodes(queryObject, elementIndex, currentLayer);
+          } else {
+            pushTargetSubNodes(queryObject, elementIndex, currentLayer);
+          }
+        }
+      };
+
       var _queryObj = new Query(queryObject);
       $http.post(API.QUERY + $scope.config.resource, _queryObj.getQuery(true)).then(function (response) {
         defer.resolve(response.data);
@@ -287,7 +285,38 @@
       return defer.promise;
     }
 
-    function renderNoRecordMessage() {
+    function pushTargetNodes(queryObject, elementIndex, currentLayer) {
+      queryObject.aggregates.push({
+        'operator': 'groupby',
+        'alias': 'series_' + elementIndex,
+        'field': currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.itemValue' : currentLayer['targetNodeField']
+      });
+      if (currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany') {
+        queryObject.aggregates.push({
+          'operator': 'groupby',
+          'alias': 'series_' + elementIndex + '_color',
+          'field': currentLayer['targetNodeField'] + '.color'
+        });
+      }
+
+    }
+
+    function pushTargetSubNodes(queryObject, elementIndex, currentLayer) {
+      queryObject.aggregates.push({
+        'operator': 'groupby',
+        'alias': 'series_' + elementIndex,
+        'field': currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeSubField']
+      });
+      if (currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany') {
+        queryObject.aggregates.push({
+          'operator': 'groupby',
+          'alias': 'series_' + elementIndex + '_color',
+          'field': currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.color'
+        });
+      }
+    }
+
+    function renderNoRecordMessage(textMessage) {
       const width = angular.element(document.querySelector('#sankeyChart-' + $scope.config.wid))[0].clientWidth;
       const height = 50;
       const backgroundColor = $rootScope.theme.id === 'light' ? '#f2f2f3' : $rootScope.theme.id === 'dark' ? '#1d1d1d' : '#212c3a';
@@ -311,7 +340,7 @@
         .attr('fill', backgroundColor);
 
       svg.append('text')
-        .text('No records found !')
+        .text(textMessage)
         .attr('x', 20)
         .attr('y', 30)
         .attr('font-size', 16)
@@ -320,63 +349,32 @@
         .attr('fill', textColor);
     }
 
+    //draw Sankey using d3
     function renderSankeyChart() {
       const width = angular.element(document.querySelector('#sankeyChart-' + $scope.config.wid))[0].clientWidth;
       const height = width > 1000 ? 800 : 600;
-      const isExternalJsonData = $scope.config.sourceJson.nodes && $scope.config.sourceJson.links && $scope.config.sourceJson.nodes.length > 0 && $scope.config.sourceJson.links.length > 0;
-      const linkColumnWidth = isExternalJsonData ? 48 : 36; // 12 * no of node columns
-      const noOfLinksColumn = isExternalJsonData ? 3 : 2;
-      const rectWidth = ((width - 150) - linkColumnWidth) / noOfLinksColumn;
+      var xPoint = 50;
+      const noOfLinksColumn = backgroundArea.length;
+      const rectWidth = (width - (xPoint + (12 * noOfLinksColumn))) / noOfLinksColumn;
       const gradientLeft = $rootScope.theme.id === 'light' ? '#ffffff' : 'grey';
       const gradientRight = $rootScope.theme.id === 'light' ? '#bbbbbb' : 'black'; // #bbbbbb
       const backgroundStroke = $rootScope.theme.id === 'light' ? '#bbbbbb' : '#808080';
       const backgroundTitle = $rootScope.theme.id === 'light' ? '#000000' : 'grey';
       const textColor = $rootScope.theme.id === 'light' ? '#000000' : '#ffffff';
       let backgroundRect = [];
-      if (isExternalJsonData) {
-        backgroundRect = [{
-          'name': 'SOURCE',
-          'xPoint': 1,
-          'index': 0,
-          'width': 150
-        },
-        {
-          'name': 'EVENTS',
-          'xPoint': 162,
-          'index': 1,
-          'width': rectWidth
-        },
-        {
-          'name': $scope.config.resource.toUpperCase(),
-          'index': 2,
-          'width': rectWidth
-        },
-        {
-          'name': $scope.config.relation.toUpperCase(),
-          'index': 3,
-          'width': rectWidth
+
+      //to draw rectangular background
+      backgroundArea.forEach(function (element, index) {
+        if (index > 0) {
+          xPoint = xPoint + (rectWidth) + (12);
         }
-        ];
-      } else {
-        backgroundRect = [{
-          'name': 'EVENTS',
-          'xPoint': 1,
-          'index': 0,
-          'width': 150
-        },
-        {
-          'name': $scope.config.resource.toUpperCase(),
-          'xPoint': 162,
-          'index': 1,
+        backgroundRect.push({
+          'name': element.label,
+          'xPoint': xPoint,
+          'index': index,
           'width': rectWidth
-        },
-        {
-          'name': $scope.config.relation.toUpperCase(),
-          'index': 2,
-          'width': rectWidth
-        }
-        ];
-      }
+        });
+      });
 
       // const rectWidth = ((width - 150) - (12 * backgroundRect.length)) / (backgroundRect.length - 1);
       sankey = d3.sankey()
@@ -386,7 +384,7 @@
         .nodeAlign(d3.sankeyLeft) // Align node to the left, default is d3.sankeyJustify. Nodes without any outgoing links are moved as left as possible.
         .nodeWidth(12)
         .nodePadding(10)
-        .extent([[150, 70], [width, height - 20]]);
+        .extent([[38, 70], [width, height - 20]]);
 
       d3.select('#sankeyChart-' + $scope.config.wid).selectAll('svg').remove();
       const svg = d3.selectAll('#sankeyChart-' + $scope.config.wid)
@@ -461,6 +459,7 @@
         })
         .attr("y", 30)
         .attr("text-anchor", "middle")
+        .attr("font-variant", "all-small-caps")
         .attr("fill", backgroundTitle)
         .text(d => d.name);
 
@@ -529,7 +528,7 @@
         .selectAll("text")
         .data(nodes)
         .enter().append('text')
-        .attr("x", d => d.x0 - 15) // d.x0 - 6)// 
+        .attr("x", d => d.x0 - 2) // d.x0 - 6)// 
         .attr("y", d => (d.y0 + d.y1) / 2)
         .attr("dy", "0.4em")
         .attr("text-anchor", "end")
@@ -543,12 +542,38 @@
         .text(d => d.value);
     }
 
+    function getRandomColor() {
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    // Load External JS Files
+    function loadJs(filePath) {
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = filePath;
+      document.getElementsByTagName('head')[0].appendChild(script);
+      script.onload = function () {
+        fileLoadDefer.resolve();
+      }
+      return fileLoadDefer.promise;
+    }
+
     function _init() {
       $scope.processing = true;
-      $timeout(function () {
-        loadJs('https://cdnjs.cloudflare.com/ajax/libs/d3-sankey/0.12.3/d3-sankey.min.js');
-        fetchData();
-      }, 1000);
+      loadJs('https://cdnjs.cloudflare.com/ajax/libs/d3-sankey/0.12.3/d3-sankey.min.js').then(function () {
+        if ($scope.config.moduleType === 'Across Modules') {
+          refreshSankey(90, 'btn-6m');
+        }
+        else {
+          cleanChartData();
+          populateCustomData();
+        }
+      });
     }
 
     _init();

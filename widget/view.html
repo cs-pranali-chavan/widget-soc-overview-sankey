@@ -1,8 +1,8 @@
 <!-- Copyright start
   MIT License
-  Copyright (c) 2023 Fortinet Inc
+  Copyright (c) 2024 Fortinet Inc
   Copyright end -->
-<div class="widget widget-container chart">
+  <div class="widget widget-container chart">
     <div class="display-flex-space-between margin-chart">
         <div class="padding-right-0 padding-left-0 widget-dashboard-title-width"
             data-ng-class="(page === 'dashboard' || page === 'reporting') ? 'widget-dashboard-title-width' : 'widget-title-width'">
@@ -15,7 +15,7 @@
         </div>
     </div>
     <div data-ng-hide="collapsed">
-        <div class="display-flex justify-content">
+        <div class="display-flex justify-content" data-ng-if="config.entityTrackable"> 
             <div data-ng-repeat="button in config.buttons">
                 <button id="{{ ::button.id }}" class="list-action btn btn-md cs-btn-100"
                     data-ng-disabled="button.disabled" data-ng-class="button.active ? 'btn-primary' : 'btn-default'"
