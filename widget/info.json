@@ -1,0 +1,25 @@
+{
+    "name": "socOverviewSankey",
+    "title": "SOC Overview Sankey",
+    "subTitle": "Visualise flow between nodes in a directed acyclic network.",
+    "version": "1.0.0",
+    "published_date": 1696417057,
+    "releaseNotes": "unavailable",
+    "metadata": {
+        "description": "Visualise flow between nodes in a directed acyclic network.",
+        "pages": [
+            "Dashboard",
+            "Reports"
+        ],
+        "certified": "No",
+        "publisher": "Fortinet",
+        "snapshots": [
+            "https:\/\/repo.fortisoar.fortinet.com\/fsr-widgets\/socOverviewSankey-1.0.0\/images\/soc-overview-sankey-settings.png",
+            "https:\/\/repo.fortisoar.fortinet.com\/fsr-widgets\/socOverviewSankey-1.0.0\/images\/soc-overview-sankey.png"
+        ],
+        "help_online": "https:\/\/github.com\/fortinet-fortisoar\/widget-soc-overview-sankey\/blob\/release\/1.0.0\/README.md",
+        "compatibility": [
+            "7.4.2"
+        ]
+    }
+}
