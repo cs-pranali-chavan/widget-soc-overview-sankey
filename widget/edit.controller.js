@@ -40,6 +40,9 @@
         targetNodeSubType: ""
       });
     }
+    else if($scope.config.layers.length >= 3){
+      $scope.maxlayers = true;
+    }
 
     if ($scope.config.customModule) {
       $scope.loadAttributesForCustomModule();
