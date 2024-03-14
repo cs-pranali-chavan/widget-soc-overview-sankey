@@ -83,13 +83,15 @@
     function loadModules() {
       appModulesService.load(true).then(function (modules) {
         $scope.modules = modules;
-        $scope.fetchAttributes();
       });
-      initializeSingleModule();
+      if ($scope.config.resource) {
+        $scope.fetchAttributes();
+      }
+      loadJSONModule();
     }
 
     //to load json obect modules
-    function initializeSingleModule() {
+    function loadJSONModule() {
       appModulesService.load(true).then(function (modules) {
         $scope.modules = modules;
 
@@ -107,7 +109,7 @@
       });
     }
 
-
+    // fetch attributes when there is change in module selection
     function changeAttribute() {
       $scope.config.layers = [];
       $scope.config.layers.push({
@@ -122,7 +124,7 @@
       fetchAttributes();
     }
 
-
+    //fetch module related attributes
     function fetchAttributes() {
       var entity = new Entity($scope.config.resource);
       entity.loadFields().then(function () {
@@ -141,7 +143,9 @@
             resource: "",
             sourceNodesField: "",
             targetNodeField: "",
-            targetNodeSubField: ""
+            targetNodeSubField: "",
+            targetNodeType: "",
+            targetNodeSubType: ""
           });
         }
         else {
@@ -154,6 +158,7 @@
       });
     }
 
+    //change in target node selection
     function onChangeTarget(_index) {
       $scope.params['targetNodesSubFields_' + _index] = [];
       $scope.config.layers[_index]['targetNodeSubField'] = '';
@@ -178,6 +183,7 @@
       $scope.config.layers[_index]['targetNodeType'] = isPicklist[0]['type'];
     }
 
+    //to check the subtarget type
     function addSubTargetType(_index) {
       let subType = _.filter($scope.params['targetNodesSubFields_' + _index], function (field) {
         return field.name === $scope.config.layers[_index].targetNodeSubField
@@ -214,9 +220,15 @@
     }
 
     function save() {
+      if (!$scope.editSankeyWidgetForm.$valid) {
+        $scope.editSankeyWidgetForm.$setTouched();
+        $scope.editSankeyWidgetForm.$focusOnFirstError();
+        return;
+      }
       $uibModalInstance.close($scope.config);
     }
 
     loadModules();
   }
 })();
+
