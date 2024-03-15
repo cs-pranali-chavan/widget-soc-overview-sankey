@@ -173,7 +173,7 @@
             nodeColorMap[item[seriesNameArray[c]]] = item[seriesNameArray[c] + '_color'];
           }
           else {
-            nodeColorMap[item[seriesNameArray[c]]] = getRandomColor();
+            nodeColorMap[item[seriesNameArray[c]]] = getRandomDarkColor();
           }
         }
       });
@@ -551,13 +551,19 @@
         .text(d => d.value);
     }
 
-    function getRandomColor() {
-      var letters = '0123456789ABCDEF';
-      var color = '#';
-      for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
+    function getRandomDarkColor() {
+      var red = Math.floor(Math.random() * 256); // Random value for red channel (0-255)
+      var green = Math.floor(Math.random() * 256); // Random value for green channel (0-255)
+      var blue = Math.floor(Math.random() * 256); // Random value for blue channel (0-255)
+
+      // Ensure at least one channel is bright enough (above 150)
+      while (red < 150 && green < 150 && blue < 150) {
+        red = Math.floor(Math.random() * 256);
+        green = Math.floor(Math.random() * 256);
+        blue = Math.floor(Math.random() * 256);
       }
-      return color;
+
+      return 'rgb(' + red + ', ' + green + ', ' + blue + ')';
     }
 
     // Load External JS Files
