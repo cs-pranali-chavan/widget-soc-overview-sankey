@@ -114,6 +114,12 @@
     // fetch attributes when there is change in module selection
     function changeAttribute() {
       $scope.config.layers = [];
+      insertLayerObect();
+      fetchAttributes();
+    }
+
+    //insert empty layer object
+    function insertLayerObect(){
       $scope.config.layers.push({
         label: "",
         resource: "",
@@ -123,7 +129,6 @@
         targetNodeType: "",
         targetNodeSubType: ""
       });
-      fetchAttributes();
     }
 
     //fetch module related attributes
@@ -140,15 +145,7 @@
         $scope.params.targetNodeFields = _.sortBy($scope.params.targetNodeFields, 'name');
 
         if ($scope.config.layers.length === 0) {
-          $scope.config.layers.push({
-            label: "",
-            resource: "",
-            sourceNodesField: "",
-            targetNodeField: "",
-            targetNodeSubField: "",
-            targetNodeType: "",
-            targetNodeSubType: ""
-          });
+          insertLayerObect();
         }
         else {
           $scope.config.layers.forEach(function (element, index) {
@@ -195,15 +192,7 @@
 
     function addLayer() {
       if ($scope.config.layers.length < 3) {
-        $scope.config.layers.push({
-          label: "",
-          resource: "",
-          sourceNodesField: "",
-          targetNodeField: "",
-          targetNodeSubField: "",
-          targetNodeType: "",
-          targetNodeSubType: ""
-        });
+        insertLayerObect();
       }
       else {
         $scope.maxlayers = true;
@@ -248,7 +237,13 @@
             BUTTON_ADD_LAYER: widgetUtilityService.translate('checkTranslation.BUTTON_ADD_LAYER'),
             BUTTON_SAVE: widgetUtilityService.translate('checkTranslation.BUTTON_SAVE'),
             BUTTON_CLOSE: widgetUtilityService.translate('checkTranslation.BUTTON_CLOSE'),
-            TEXT_IS_NOT_TRACKABLE: widgetUtilityService.translate('checkTranslation.TEXT_IS_NOT_TRACKABLE')
+            TEXT_IS_NOT_TRACKABLE: widgetUtilityService.translate('checkTranslation.TEXT_IS_NOT_TRACKABLE'),
+            TOOLTIP_DATASOURCE:  widgetUtilityService.translate('checkTranslation.TOOLTIP_DATASOURCE'),
+            TOOLTIP_JSONDATA: widgetUtilityService.translate('checkTranslation.TOOLTIP_JSONDATA'),
+            TOOLTIP_LIVEDATA: widgetUtilityService.translate('checkTranslation.TOOLTIP_LIVEDATA'),
+            TOOLTIP_JSON_SELECT_MODULE: widgetUtilityService.translate('checkTranslation.TOOLTIP_JSON_SELECT_MODULE'),
+            TOOLTIP_JSON_TYPE_DATA: widgetUtilityService.translate('checkTranslation.TOOLTIP_JSON_TYPE_DATA'),
+            TOOLTIP_JSON_RECORD_FIELD: widgetUtilityService.translate('checkTranslation.TOOLTIP_JSON_RECORD_FIELD')
           };
           $scope.header = $scope.config.title ? $scope.viewWidgetVars.HEADER_EDIT_CHART : $scope.viewWidgetVars.HEADER_ADD_CHART;
         });

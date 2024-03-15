@@ -1,14 +1,14 @@
 {
     "checkTranslation": {
-        "HEADER_ADD_CHART": "添加 SOC 概览桑基图",
-        "HEADER_EDIT_CHART": " 编辑 SOC 概览桑基图",
+        "HEADER_ADD_CHART":"添加 SOC 概览桑基图",
+        "HEADER_EDIT_CHART":" 编辑 SOC 概览桑基图",
         "LABEL_TITLE": "标题",
         "LABEL_DATASOURCE": "数据源",
         "LABEL_RECORD_CONTAINING_JSON_DATA": "包含 JSON 数据的记录",
         "LABEL_JSON_DATA_SOURCE_MODULES": "JSON 数据源模块",
         "LABEL_SELECT_AN_OPTION": "选择一个选项",
         "LABEL_GET_LIVE_DATA": "获取实时数据",
-        "LABEL_SELECT_FIELD": "选择字段",
+        "LABEL_SELECT_FIELD":"选择字段",
         "LABEL_FILTER_RECORD": "过滤包含 JSON 数据的记录",
         "LABEL_SELECT_A_MODULE": "选择包含 JSON 字段的模块",
         "LABEL_FILTER_CRITERIA": "筛选条件",
@@ -19,13 +19,19 @@
         "LABEL_SELECT_TARGET_NODES": "选择目标节点",
         "LABEL_TARGET_NODE_PICKLIST": "目标节点下拉列表",
         "LABEL_SELECT_PICKLIST": "选择下拉列表",
-        "LABEL_RESOURCE": "资源",
+        "LABEL_RESOURCE":"资源",
         "BUTTON_ADD_LAYER": "添加图层",
         "BUTTON_SAVE": "保存",
         "BUTTON_CLOSE": "关闭",
-        "BUTTON_LAST_6_MONTHS": "最近6个月",
-        "BUTTON_LAST_3_MONTHS": "最近3个月",
-        "BUTTON_LAST_30_DAYS": "最近30天",
-        "TEXT_IS_NOT_TRACKABLE": "无法追踪"
+        "BUTTON_LAST_6_MONTHS":"最近6个月",
+        "BUTTON_LAST_3_MONTHS":"最近3个月",
+        "BUTTON_LAST_30_DAYS":"最近30天",
+        "TEXT_IS_NOT_TRACKABLE": "无法追踪",
+        "TOOLTIP_DATASOURCE":"如果所有要呈现的记录都在某个模块的特定字段的单个记录中，请选择“包含 JSON 数据的记录”选项。选择“模块中的记录数”数据集，您可以选择模块，并根据给定的筛选器显示模块的记录数。",
+        "TOOLTIP_JSONDATA":"可以选择包含 JSON 对象的单个记录。",
+        "TOOLTIP_LIVEDATA":"它允许您获取实时计数。",
+        "TOOLTIP_JSON_SELECT_MODULE":"请选择包含JSON数据的模块",
+        "TOOLTIP_JSON_TYPE_DATA":"请选择包含数据的字段，下拉菜单中仅提供 JSON 类型的字段。",
+        "TOOLTIP_JSON_RECORD_FIELD":"此小部件仅需要一个 JSON 记录才能工作。因此，在存在多个记录的情况下，将假定第一个记录。建议应用过滤器。"
     }
 }
