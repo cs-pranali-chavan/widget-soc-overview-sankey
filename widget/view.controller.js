@@ -3,14 +3,15 @@
   Copyright (c) 2024 Fortinet Inc
   Copyright end */
 'use strict';
+'use strict';
 (function () {
   angular
     .module('cybersponse')
     .controller('socOverviewSankey200Ctrl', socOverviewSankey200Ctrl);
 
-  socOverviewSankey200Ctrl.$inject = ['$scope', '$rootScope', 'config', 'widgetBasePath', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService', 'PagedCollection'];
+  socOverviewSankey200Ctrl.$inject = ['$scope', '$rootScope', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService', 'PagedCollection', 'widgetUtilityService'];
 
-  function socOverviewSankey200Ctrl($scope, $rootScope, config, widgetBasePath, $http, $q, Query, API, _, currentDateMinusService, PagedCollection) {
+  function socOverviewSankey200Ctrl($scope, $rootScope, config, $http, $q, Query, API, _, currentDateMinusService, PagedCollection, widgetUtilityService) {
 
     var sankey;
     var chartData = {};
@@ -26,7 +27,7 @@
     $scope.duration = 90;	// Default duration
     $scope.config.buttons = [{
       id: 'btn-6m',
-      text: 'Last 6 Months',
+      text: 'BUTTON_LAST_6_MONTHS',
       onClick: function () {
         refreshSankey(90, 'btn-6m');
       },
@@ -34,7 +35,7 @@
       type: 'submit'
     }, {
       id: 'btn-3m',
-      text: 'Last 3 Months',
+      text: 'BUTTON_LAST_3_MONTHS',
       onClick: function () {
         refreshSankey(60, 'btn-3m');
       },
@@ -42,7 +43,7 @@
       type: 'submit'
     }, {
       id: 'btn-30d',
-      text: 'Last 30 Days',
+      text: 'BUTTON_LAST_30_DAYS',
       onClick: function () {
         refreshSankey(30, 'btn-30d');
       },
@@ -125,6 +126,7 @@
       });
     }
 
+    //create nodes and links data required to plot on Sankey chart
     function createDataToPlot(dataToPlot) {
       let idIndex = 0;
       let nodesMap = [];
@@ -132,6 +134,12 @@
       noOfSeries = $scope.config.layers.length + 1;
       let seriesNameArray = [];
       backgroundArea = [];
+      var replacedArray = _.map(dataToPlot, function (obj) {
+        return _.mapObject(obj, function (value, key) {
+          return value === null ? "Unknown" : value;
+        });
+      });
+      dataToPlot = replacedArray;
       // Form JSON Data
       for (var i = 0; i < noOfSeries; i++) {
         seriesNameArray.push(['series_' + i]);
@@ -161,7 +169,7 @@
       });
       dataToPlot.forEach((item, index) => {
         for (let c = 0; c < seriesNameArray.length; c++) {
-          if (item[seriesNameArray[c] + '_color']) {
+          if (item[seriesNameArray[c] + '_color'] !== 'Unknown') {
             nodeColorMap[item[seriesNameArray[c]]] = item[seriesNameArray[c] + '_color'];
           }
           else {
@@ -178,7 +186,7 @@
       // Append input JSON data for Source/External Json nodes
       // ToDo: Add API call to fetch JSON data in global variable, if API fail, then accept data from JSON field
 
-      // Append link data for API response
+      // create nodes and links data as per the dynamic series generated data
       dataToPlot.forEach((link, index) => {
         for (let c = 0; c < seriesNameArray.length; c++) {
           if (link[seriesNameArray[c]] && link[seriesNameArray[c + 1]]) {
@@ -316,6 +324,7 @@
       }
     }
 
+    //render text if no data found or nodes and links are not formed by the fetched data
     function renderNoRecordMessage(textMessage) {
       const width = angular.element(document.querySelector('#sankeyChart-' + $scope.config.wid))[0].clientWidth;
       const height = 50;
@@ -563,8 +572,21 @@
       return fileLoadDefer.promise;
     }
 
+    //to handle i18n 
+    function _handleTranslations() {
+      widgetUtilityService.checkTranslationMode($scope.$parent.model.type).then(function () {
+        $scope.viewWidgetVars = {
+          // Create your translating static string variables here
+          BUTTON_LAST_6_MONTHS: widgetUtilityService.translate('checkTranslation.BUTTON_LAST_6_MONTHS'),
+          BUTTON_LAST_3_MONTHS: widgetUtilityService.translate('checkTranslation.BUTTON_LAST_3_MONTHS'),
+          BUTTON_LAST_30_DAYS: widgetUtilityService.translate('checkTranslation.BUTTON_LAST_30_DAYS')
+        };
+      });
+    }
+
     function _init() {
       $scope.processing = true;
+      _handleTranslations();
       loadJs('https://cdnjs.cloudflare.com/ajax/libs/d3-sankey/0.12.3/d3-sankey.min.js').then(function () {
         if ($scope.config.moduleType === 'Across Modules') {
           refreshSankey(90, 'btn-6m');

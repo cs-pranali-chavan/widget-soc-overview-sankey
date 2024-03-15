@@ -1,0 +1,31 @@
+{
+    "checkTranslation": {
+        "HEADER_ADD_CHART": " SOC概要サンキーチャートを追加する",
+        "HEADER_EDIT_CHART": "SOC概要サンキーチャートを編集する",
+        "LABEL_TITLE": "タイトル",
+        "LABEL_DATASOURCE": "データソース",
+        "LABEL_RECORD_CONTAINING_JSON_DATA": "JSONデータを含むレコード",
+        "LABEL_JSON_DATA_SOURCE_MODULES": "JSONデータソースモジュール",
+        "LABEL_SELECT_AN_OPTION": "オプションを選択",
+        "LABEL_GET_LIVE_DATA": "ライブデータを取得",
+        "LABEL_SELECT_FIELD": "フィールドを選択",
+        "LABEL_FILTER_RECORD": "JSONデータを含むレコードをフィルタリング",
+        "LABEL_SELECT_A_MODULE": "JSONフィールドを含むモジュールを選択",
+        "LABEL_FILTER_CRITERIA": "フィルター条件",
+        "LABEL_LABELTEXT": "ラベル",
+        "LABEL_SOURCE_NODES": "ソースノード",
+        "LABEL_SELECT_SOURCE_NODES": "ソースノードを選択",
+        "LABEL_TARGET_NODES": "ターゲットノード",
+        "LABEL_SELECT_TARGET_NODES": "ターゲットノードを選択",
+        "LABEL_TARGET_NODE_PICKLIST": "ターゲットノードのピックリスト",
+        "LABEL_SELECT_PICKLIST": "ピックリストを選択",
+        "LABEL_RESOURCE": "リソース",
+        "BUTTON_ADD_LAYER": "レイヤーを追加",
+        "BUTTON_SAVE": "保存",
+        "BUTTON_CLOSE": "閉じる",
+        "BUTTON_LAST_6_MONTHS": "最後の6ヶ月",
+        "BUTTON_LAST_3_MONTHS": "最後の3ヶ月",
+        "BUTTON_LAST_30_DAYS": "最後の30日間",
+        "TEXT_IS_NOT_TRACKABLE": "は追跡できません"
+    }
+}

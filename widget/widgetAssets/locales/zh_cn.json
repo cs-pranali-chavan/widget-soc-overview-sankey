@@ -1,0 +1,31 @@
+{
+    "checkTranslation": {
+        "HEADER_ADD_CHART": "添加 SOC 概览桑基图",
+        "HEADER_EDIT_CHART": " 编辑 SOC 概览桑基图",
+        "LABEL_TITLE": "标题",
+        "LABEL_DATASOURCE": "数据源",
+        "LABEL_RECORD_CONTAINING_JSON_DATA": "包含 JSON 数据的记录",
+        "LABEL_JSON_DATA_SOURCE_MODULES": "JSON 数据源模块",
+        "LABEL_SELECT_AN_OPTION": "选择一个选项",
+        "LABEL_GET_LIVE_DATA": "获取实时数据",
+        "LABEL_SELECT_FIELD": "选择字段",
+        "LABEL_FILTER_RECORD": "过滤包含 JSON 数据的记录",
+        "LABEL_SELECT_A_MODULE": "选择包含 JSON 字段的模块",
+        "LABEL_FILTER_CRITERIA": "筛选条件",
+        "LABEL_LABELTEXT": "标签",
+        "LABEL_SOURCE_NODES": "源节点",
+        "LABEL_SELECT_SOURCE_NODES": "选择源节点",
+        "LABEL_TARGET_NODES": "目标节点",
+        "LABEL_SELECT_TARGET_NODES": "选择目标节点",
+        "LABEL_TARGET_NODE_PICKLIST": "目标节点下拉列表",
+        "LABEL_SELECT_PICKLIST": "选择下拉列表",
+        "LABEL_RESOURCE": "资源",
+        "BUTTON_ADD_LAYER": "添加图层",
+        "BUTTON_SAVE": "保存",
+        "BUTTON_CLOSE": "关闭",
+        "BUTTON_LAST_6_MONTHS": "最近6个月",
+        "BUTTON_LAST_3_MONTHS": "最近3个月",
+        "BUTTON_LAST_30_DAYS": "最近30天",
+        "TEXT_IS_NOT_TRACKABLE": "无法追踪"
+    }
+}

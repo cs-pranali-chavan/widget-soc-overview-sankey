@@ -8,13 +8,12 @@
     .module('cybersponse')
     .controller('editSocOverviewSankey200Ctrl', editSocOverviewSankey200Ctrl);
 
-  editSocOverviewSankey200Ctrl.$inject = ['$scope', '$uibModalInstance', 'config', 'appModulesService', 'Entity', 'modelMetadatasService'];
+  editSocOverviewSankey200Ctrl.$inject = ['$scope', '$uibModalInstance', 'config', 'appModulesService', 'Entity', 'modelMetadatasService', 'widgetUtilityService', '$timeout'];
 
-  function editSocOverviewSankey200Ctrl($scope, $uibModalInstance, config, appModulesService, Entity, modelMetadatasService) {
+  function editSocOverviewSankey200Ctrl($scope, $uibModalInstance, config, appModulesService, Entity, modelMetadatasService, widgetUtilityService, $timeout) {
     $scope.cancel = cancel;
     $scope.save = save;
     $scope.config = config;
-    $scope.header = $scope.config.title ? 'Edit SOC Overview Sankey Chart' : 'Add SOC Overview Sankey Chart';
     $scope.params = {};
     $scope.jsonObjModuleList = [];
     $scope.loadAttributesForCustomModule = loadAttributesForCustomModule;
@@ -40,7 +39,7 @@
         targetNodeSubType: ""
       });
     }
-    else if($scope.config.layers.length >= 3){
+    else if ($scope.config.layers.length >= 3) {
       $scope.maxlayers = true;
     }
 
@@ -218,6 +217,49 @@
       }
     }
 
+    //provide i18n support
+    function _handleTranslations() {
+      let widgetNameVersion = widgetUtilityService.getWidgetNameVersion($scope.$resolve.widget, $scope.$resolve.widgetBasePath);
+
+      if (widgetNameVersion) {
+        widgetUtilityService.checkTranslationMode(widgetNameVersion).then(function () {
+          $scope.viewWidgetVars = {
+            // Create your translating static string variables here
+            HEADER_ADD_CHART: widgetUtilityService.translate('checkTranslation.HEADER_ADD_CHART'),
+            HEADER_EDIT_CHART: widgetUtilityService.translate('checkTranslation.HEADER_EDIT_CHART'),
+            LABEL_TITLE: widgetUtilityService.translate('checkTranslation.LABEL_TITLE'),
+            LABEL_DATASOURCE: widgetUtilityService.translate('checkTranslation.LABEL_DATASOURCE'),
+            LABEL_RECORD_CONTAINING_JSON_DATA: widgetUtilityService.translate('checkTranslation.LABEL_RECORD_CONTAINING_JSON_DATA'),
+            LABEL_JSON_DATA_SOURCE_MODULES: widgetUtilityService.translate('checkTranslation.LABEL_JSON_DATA_SOURCE_MODULES'),
+            LABEL_SELECT_AN_OPTION: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_AN_OPTION'),
+            LABEL_GET_LIVE_DATA: widgetUtilityService.translate('checkTranslation.LABEL_GET_LIVE_DATA'),
+            LABEL_SELECT_FIELD: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_FIELD'),
+            LABEL_FILTER_RECORD: widgetUtilityService.translate('checkTranslation.LABEL_FILTER_RECORD'),
+            LABEL_SELECT_A_MODULE: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_A_MODULE'),
+            LABEL_FILTER_CRITERIA: widgetUtilityService.translate('checkTranslation.LABEL_FILTER_CRITERIA'),
+            LABEL_LABELTEXT: widgetUtilityService.translate('checkTranslation.LABEL_LABELTEXT'),
+            LABEL_SOURCE_NODES: widgetUtilityService.translate('checkTranslation.LABEL_SOURCE_NODES'),
+            LABEL_SELECT_SOURCE_NODES: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_SOURCE_NODES'),
+            LABEL_TARGET_NODES: widgetUtilityService.translate('checkTranslation.LABEL_TARGET_NODES'),
+            LABEL_SELECT_TARGET_NODES: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_TARGET_NODES'),
+            LABEL_TARGET_NODE_PICKLIST: widgetUtilityService.translate('checkTranslation.LABEL_TARGET_NODE_PICKLIST'),
+            LABEL_SELECT_PICKLIST: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_PICKLIST'),
+            LABEL_RESOURCE: widgetUtilityService.translate('checkTranslation.LABEL_RESOURCE'),
+            BUTTON_ADD_LAYER: widgetUtilityService.translate('checkTranslation.BUTTON_ADD_LAYER'),
+            BUTTON_SAVE: widgetUtilityService.translate('checkTranslation.BUTTON_SAVE'),
+            BUTTON_CLOSE: widgetUtilityService.translate('checkTranslation.BUTTON_CLOSE'),
+            TEXT_IS_NOT_TRACKABLE: widgetUtilityService.translate('checkTranslation.TEXT_IS_NOT_TRACKABLE')
+          };
+          $scope.header = $scope.config.title ? $scope.viewWidgetVars.HEADER_EDIT_CHART : $scope.viewWidgetVars.HEADER_ADD_CHART;
+        });
+      }
+      else {
+        $timeout(function () {
+          cancel();
+        }, 100)
+      }
+    }
+
     function cancel() {
       $uibModalInstance.dismiss('cancel');
     }
@@ -231,7 +273,12 @@
       $uibModalInstance.close($scope.config);
     }
 
-    loadModules();
+    function init() {
+      _handleTranslations();
+      loadModules();
+    }
+
+    init();
   }
 })();
 
