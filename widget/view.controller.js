@@ -11,7 +11,7 @@
 
   socOverviewSankey200Ctrl.$inject = ['$scope', '$rootScope', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService', 'PagedCollection', 'widgetUtilityService'];
 
-  function socOverviewSankey200Ctrl($scope, $rootScope, config, $http, $q, Query, API, _, currentDateMinusService, PagedCollection, widgetUtilityService) {
+  function socOverviewSankey200Ctrl($scope, $rootScope, config, _, PagedCollection, widgetUtilityService, socOverviewSankeyService) {
 
     var sankey;
     var chartData = {};
@@ -19,8 +19,8 @@
     var links = [];
     var nodeColorMap = [];
     var noOfSeries = 0;
-    var backgroundArea = [];
-    var fileLoadDefer = $q.defer();
+    var backgroundArea  = [];
+    var errorMessage = '';
     $scope.config = config;
     $scope.moduleType = $scope.config.moduleType;
     $scope.processing = false;
@@ -58,28 +58,6 @@
       nodeColorMap = [];
     }
 
-    function getFilters() {
-      let frontFilter = {};
-      frontFilter.logic = 'AND';
-      if (config.entityTrackable) {
-        frontFilter.filters = [{
-          field: 'createDate',
-          operator: 'gte',
-          value: currentDateMinusService($scope.duration),
-          type: 'datetime'
-        }];
-      }
-
-      let dataFilters = $scope.config.filters ? angular.copy($scope.config.filters) : {};
-      if (dataFilters.filters) {
-        dataFilters.filters.push(frontFilter);
-      } else {
-        dataFilters = frontFilter;
-      }
-
-      return dataFilters;
-    }
-
     // Refresh Sankey Chart
     function refreshSankey(duration, id) {
       $scope.duration = duration;
@@ -100,27 +78,21 @@
       }
     }
 
-    // Load External JS Files
-    function loadJs(jsPath) {
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = jsPath;
-      document.getElementsByTagName("head")[0].appendChild(script);
-    }
-
     //fetch live data
     function fetchData() {
-      getResourceAggregate().then(function (result) {
+      socOverviewSankeyService.getResourceAggregate($scope.config,$scope.duration).then(function (result) {
         $scope.processing = false;
         if (result && result['hydra:member'] && result['hydra:member'].length > 0) {
           let dataToPlot = result['hydra:member'];
           createDataToPlot(dataToPlot);
         } else {
-          renderNoRecordMessage('No records found !');
+          errorMessage = $scope.viewWidgetVars.MESSAGE_NO_RECORDS_FOUND;
+          renderNoRecordMessage(errorMessage);
         }
       }, function (error) {
         $scope.processing = false;
-        renderNoRecordMessage('No records found !');
+        errorMessage = $scope.viewWidgetVars.MESSAGE_NO_RECORDS_FOUND;
+        renderNoRecordMessage(errorMessage);
       }).finally(function () {
         $scope.processing = false;
       });
@@ -134,46 +106,46 @@
       noOfSeries = $scope.config.layers.length + 1;
       let seriesNameArray = [];
       backgroundArea = [];
-      var replacedArray = _.map(dataToPlot, function (obj) {
-        return _.mapObject(obj, function (value, key) {
-          return value === null ? "Unknown" : value;
+      var replacedArray = _.map(dataToPlot, function(obj) {
+        return _.mapObject(obj, function(value, key) {
+            return value === null ? "Unknown" : value;
         });
       });
       dataToPlot = replacedArray;
       // Form JSON Data
-      for (var i = 0; i < noOfSeries; i++) {
-        seriesNameArray.push(['series_' + i]);
-        seriesArray.push(_.filter(_.map(dataToPlot, item => item['series_' + i]), (item, index, arr) => item !== null && arr.indexOf(item) == index));
+     for(var i = 0; i < noOfSeries; i++){
+        seriesNameArray.push(['series_'+i]);
+        seriesArray.push(_.filter(_.map(dataToPlot, item => item['series_'+i]), (item, index, arr) => item !== null && arr.indexOf(item) == index));    
       };
-      seriesArray.forEach((element, s) => {
-        if (element.length > 0) {
-          if ($scope.config.moduleType === 'Across Modules' && $scope.config.layers[s]) {
-            backgroundArea.push({ 'label': $scope.config.layers[s]['label'] });
+      seriesArray.forEach((element,s) => {
+        if(element.length >0){
+          if($scope.config.moduleType === 'Across Modules' && $scope.config.layers[s]){
+            backgroundArea.push({'label':$scope.config.layers[s]['label']});
           }
-          else {
-            if (s < (seriesArray.length - 1)) {
-              backgroundArea.push({ 'label': seriesNameArray[s] });
+          else{
+            if(s < (seriesArray.length-1)){
+              backgroundArea.push({'label':seriesNameArray[s]});
             }
           }
-          element.forEach((node, i) => {
+          element.forEach((node,i) => {
             nodesMap.push({
-              'name': node + '_' + s,
-              'idIndex': idIndex
+              'name':node + '_' + s,
+              'idIndex' : idIndex
             });
             nodes.push({
               "name": node,
               "id": idIndex++
             });
-          });
+            });
         }
       });
       dataToPlot.forEach((item, index) => {
         for (let c = 0; c < seriesNameArray.length; c++) {
-          if (item[seriesNameArray[c] + '_color'] !== 'Unknown') {
-            nodeColorMap[item[seriesNameArray[c]]] = item[seriesNameArray[c] + '_color'];
+          if (item[seriesNameArray[c]+'_color'] !== 'Unknown'){
+            nodeColorMap[item[seriesNameArray[c]]] = item[seriesNameArray[c]+'_color'];
           }
-          else {
-            nodeColorMap[item[seriesNameArray[c]]] = getRandomDarkColor();
+          else{
+            nodeColorMap[item[seriesNameArray[c]]] = socOverviewSankeyService.getRandomDarkColor();
           }
         }
       });
@@ -185,33 +157,34 @@
       //fetchJSONData();
       // Append input JSON data for Source/External Json nodes
       // ToDo: Add API call to fetch JSON data in global variable, if API fail, then accept data from JSON field
-
+      
       // create nodes and links data as per the dynamic series generated data
-      dataToPlot.forEach((link, index) => {
+      dataToPlot.forEach((link,index) => {
         for (let c = 0; c < seriesNameArray.length; c++) {
-          if (link[seriesNameArray[c]] && link[seriesNameArray[c + 1]]) {
+          if (link[seriesNameArray[c]] && link[seriesNameArray[c+1]]) {
             let linkData = {
-              "source": _.filter(nodesMap, { 'name': link[seriesNameArray[c]] + '_' + c })[0]['idIndex'],
-              "target": _.filter(nodesMap, { 'name': link[seriesNameArray[c + 1]] + '_' + (c + 1) })[0]['idIndex'],
+              "source": _.filter(nodesMap, { 'name': link[seriesNameArray[c]] + '_' + c})[0]['idIndex'],
+              "target": _.filter(nodesMap, { 'name': link[seriesNameArray[c+1]] + '_' + (c+1) })[0]['idIndex'],
               "value": link.total,
               "id": index
             };
             if (nodeColorMap[link[seriesNameArray[c]]]) {
-              linkData.color = nodeColorMap[link[seriesNameArray[c + 1]]];
+              linkData.color = nodeColorMap[link[seriesNameArray[c+1]]];
             }
             links.push(linkData);
           }
         }
       });
 
-      if (nodes.length > 0 && links.length > 0) {
+      if(nodes.length > 0 && links.length>0){
         chartData.nodes = nodes;
         chartData.links = links;
         renderSankeyChart();
-      } else {
+      }else{
+        errorMessage = $scope.viewWidgetVars.MESSAGE_NO_NODES_LINKS;
         renderNoRecordMessage('Nodes and Links not created by the given data')
       }
-
+    
     }
 
     //to populate data for custom module
@@ -236,96 +209,8 @@
       })
     }
 
-    //API payload
-    function getResourceAggregate() {
-      var defer = $q.defer();
-      var dataFilters = getFilters();
-      var queryObject = {
-        sort: [{
-          field: 'total',
-          direction: 'DESC'
-        }],
-        aggregates: [
-          {
-            'operator': 'countdistinct',
-            'field': '*',
-            'alias': 'total'
-          }
-        ],
-        relationship: true,
-        filters: [dataFilters]
-      };
-      var elementIndex = 0;
-      for (var i = 0; i < config.layers.length; i++) {
-        let currentLayer = config.layers[i];
-        //if - else to check if it is the 1st layer or not
-        if (currentLayer['sourceNodesField'] !== '') {
-          queryObject.aggregates.push({
-            'operator': 'groupby',
-            'alias': 'series_' + elementIndex,
-            'field': currentLayer['sourceNodesField']
-          });
-          if (currentLayer['targetNodeSubField'] === '') {
-            elementIndex++;
-            pushTargetNodes(queryObject, elementIndex, currentLayer);
-          } else {
-            elementIndex++;
-            pushTargetSubNodes(queryObject, elementIndex, currentLayer);
-          }
-        } else {
-          //var prev = i-1;
-          elementIndex++;
-          if (currentLayer['targetNodeSubField'] === '') {
-            pushTargetNodes(queryObject, elementIndex, currentLayer);
-          } else {
-            pushTargetSubNodes(queryObject, elementIndex, currentLayer);
-          }
-        }
-      };
-
-      var _queryObj = new Query(queryObject);
-      $http.post(API.QUERY + $scope.config.resource, _queryObj.getQuery(true)).then(function (response) {
-        defer.resolve(response.data);
-      }, function (error) {
-        defer.reject(error);
-      });
-
-      return defer.promise;
-    }
-
-    function pushTargetNodes(queryObject, elementIndex, currentLayer) {
-      queryObject.aggregates.push({
-        'operator': 'groupby',
-        'alias': 'series_' + elementIndex,
-        'field': currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.itemValue' : currentLayer['targetNodeField']
-      });
-      if (currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany') {
-        queryObject.aggregates.push({
-          'operator': 'groupby',
-          'alias': 'series_' + elementIndex + '_color',
-          'field': currentLayer['targetNodeField'] + '.color'
-        });
-      }
-
-    }
-
-    function pushTargetSubNodes(queryObject, elementIndex, currentLayer) {
-      queryObject.aggregates.push({
-        'operator': 'groupby',
-        'alias': 'series_' + elementIndex,
-        'field': currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeSubField']
-      });
-      if (currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany') {
-        queryObject.aggregates.push({
-          'operator': 'groupby',
-          'alias': 'series_' + elementIndex + '_color',
-          'field': currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.color'
-        });
-      }
-    }
-
     //render text if no data found or nodes and links are not formed by the fetched data
-    function renderNoRecordMessage(textMessage) {
+    function renderNoRecordMessage() {
       const width = angular.element(document.querySelector('#sankeyChart-' + $scope.config.wid))[0].clientWidth;
       const height = 50;
       const backgroundColor = $rootScope.theme.id === 'light' ? '#f2f2f3' : $rootScope.theme.id === 'dark' ? '#1d1d1d' : '#212c3a';
@@ -349,7 +234,7 @@
         .attr('fill', backgroundColor);
 
       svg.append('text')
-        .text(textMessage)
+        .text(errorMessage)
         .attr('x', 20)
         .attr('y', 30)
         .attr('font-size', 16)
@@ -364,7 +249,7 @@
       const height = width > 1000 ? 800 : 600;
       var xPoint = 50;
       const noOfLinksColumn = backgroundArea.length;
-      const rectWidth = (width - (xPoint + (12 * noOfLinksColumn))) / noOfLinksColumn;
+      const rectWidth = (width - (xPoint + (12*noOfLinksColumn))) / noOfLinksColumn;
       const gradientLeft = $rootScope.theme.id === 'light' ? '#ffffff' : 'grey';
       const gradientRight = $rootScope.theme.id === 'light' ? '#bbbbbb' : 'black'; // #bbbbbb
       const backgroundStroke = $rootScope.theme.id === 'light' ? '#bbbbbb' : '#808080';
@@ -373,18 +258,18 @@
       let backgroundRect = [];
 
       //to draw rectangular background
-      backgroundArea.forEach(function (element, index) {
-        if (index > 0) {
+      backgroundArea.forEach(function(element,index){
+        if(index > 0){
           xPoint = xPoint + (rectWidth) + (12);
         }
-        backgroundRect.push({
-          'name': element.label,
-          'xPoint': xPoint,
-          'index': index,
-          'width': rectWidth
+          backgroundRect.push({
+            'name': element.label,
+            'xPoint': xPoint,
+            'index': index,
+            'width': rectWidth
         });
       });
-
+     
       // const rectWidth = ((width - 150) - (12 * backgroundRect.length)) / (backgroundRect.length - 1);
       sankey = d3.sankey()
         .nodeSort((a, b) => a.id - b.id)
@@ -551,41 +436,16 @@
         .text(d => d.value);
     }
 
-    function getRandomDarkColor() {
-      var red = Math.floor(Math.random() * 256); // Random value for red channel (0-255)
-      var green = Math.floor(Math.random() * 256); // Random value for green channel (0-255)
-      var blue = Math.floor(Math.random() * 256); // Random value for blue channel (0-255)
-
-      // Ensure at least one channel is bright enough (above 150)
-      while (red < 150 && green < 150 && blue < 150) {
-        red = Math.floor(Math.random() * 256);
-        green = Math.floor(Math.random() * 256);
-        blue = Math.floor(Math.random() * 256);
-      }
-
-      return 'rgb(' + red + ', ' + green + ', ' + blue + ')';
-    }
-
-    // Load External JS Files
-    function loadJs(filePath) {
-      var script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = filePath;
-      document.getElementsByTagName('head')[0].appendChild(script);
-      script.onload = function () {
-        fileLoadDefer.resolve();
-      }
-      return fileLoadDefer.promise;
-    }
-
     //to handle i18n 
     function _handleTranslations() {
       widgetUtilityService.checkTranslationMode($scope.$parent.model.type).then(function () {
         $scope.viewWidgetVars = {
           // Create your translating static string variables here
-          BUTTON_LAST_6_MONTHS: widgetUtilityService.translate('checkTranslation.BUTTON_LAST_6_MONTHS'),
-          BUTTON_LAST_3_MONTHS: widgetUtilityService.translate('checkTranslation.BUTTON_LAST_3_MONTHS'),
-          BUTTON_LAST_30_DAYS: widgetUtilityService.translate('checkTranslation.BUTTON_LAST_30_DAYS')
+          BUTTON_LAST_6_MONTHS : widgetUtilityService.translate('checkTranslation.BUTTON_LAST_6_MONTHS'),
+          BUTTON_LAST_3_MONTHS : widgetUtilityService.translate('checkTranslation.BUTTON_LAST_3_MONTHS'),
+          BUTTON_LAST_30_DAYS : widgetUtilityService.translate('checkTranslation.BUTTON_LAST_30_DAYS'),
+          MESSAGE_NO_RECORDS_FOUND : widgetUtilityService.translate('checkTranslation.MESSAGE_NO_RECORDS_FOUND'),
+          MESSAGE_NO_NODES_LINKS : widgetUtilityService.translate('checkTranslation.MESSAGE_NO_NODES_LINKS')
         };
       });
     }
@@ -593,7 +453,7 @@
     function _init() {
       $scope.processing = true;
       _handleTranslations();
-      loadJs('https://cdnjs.cloudflare.com/ajax/libs/d3-sankey/0.12.3/d3-sankey.min.js').then(function () {
+      socOverviewSankeyService.loadJs('https://cdnjs.cloudflare.com/ajax/libs/d3-sankey/0.12.3/d3-sankey.min.js').then(function () {
         if ($scope.config.moduleType === 'Across Modules') {
           refreshSankey(90, 'btn-6m');
         }
