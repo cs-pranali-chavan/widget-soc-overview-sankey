@@ -12,11 +12,11 @@
         "LABEL_FILTER_RECORD": "JSONデータを含むレコードをフィルタリング",
         "LABEL_SELECT_A_MODULE": "JSONフィールドを含むモジュールを選択",
         "LABEL_FILTER_CRITERIA": "フィルター条件",
-        "LABEL_LABELTEXT": "ラベル",
-        "LABEL_SOURCE_NODES": "ソースノード",
-        "LABEL_SELECT_SOURCE_NODES": "ソースノードを選択",
-        "LABEL_TARGET_NODES": "ターゲットノード",
-        "LABEL_SELECT_TARGET_NODES": "ターゲットノードを選択",
+        "LABEL": "ラベル",
+        "LABEL_SOURCE_NODE": "ソースノード",
+        "LABEL_SELECT_SOURCE_NODE": "ソースノードを選択",
+        "LABEL_TARGET_NODE": "ターゲットノード",
+        "LABEL_SELECT_TARGET_NODE": "ターゲットノードを選択",
         "LABEL_TARGET_NODE_PICKLIST": "ターゲットノードのピックリスト",
         "LABEL_SELECT_PICKLIST": "ピックリストを選択",
         "LABEL_RESOURCE": "リソース",
@@ -34,6 +34,7 @@
         "TOOLTIP_JSON_TYPE_DATA":"データが含まれているフィールドを選択してください、ドロップダウンにはJSONタイプのフィールドのみが利用可能です。",
         "TOOLTIP_JSON_RECORD_FIELD":"このウィジェットは動作に1つのJSONレコードのみが必要です。したがって、複数のレコードがある場合は、最初のレコードが仮定されます。フィルターを適用することが推奨されます。",
         "MESSAGE_NO_RECORDS_FOUND":"レコードが見つかりませんでした !",
-        "MESSAGE_NO_NODES_LINKS":"指定されたデータによって作成されなかったノードとリンク !"
+        "MESSAGE_NO_NODES_LINKS":"指定されたデータによって作成されなかったノードとリンク !",
+        "MESSAGE_LINKED":"リンクされた"
     }
 }

@@ -12,11 +12,11 @@
         "LABEL_FILTER_RECORD":"Filter Record Which Contains The JSON Data",
         "LABEL_SELECT_A_MODULE":"Select a module wich contains JSON field",
         "LABEL_FILTER_CRITERIA":"Filter Criteria",
-        "LABEL_LABELTEXT":"LABEL",
-        "LABEL_SOURCE_NODES":"Source Nodes",
-        "LABEL_SELECT_SOURCE_NODES":"Select Source Nodes",
-        "LABEL_TARGET_NODES":"Target Nodes",
-        "LABEL_SELECT_TARGET_NODES":"Select Target Nodes",
+        "LABEL":"Label",
+        "LABEL_SOURCE_NODE":"Source Node",
+        "LABEL_SELECT_SOURCE_NODE":"Select Source Node",
+        "LABEL_TARGET_NODE":"Target Node",
+        "LABEL_SELECT_TARGET_NODE":"Select Target Node",
         "LABEL_TARGET_NODE_PICKLIST":"Target Node Picklist",
         "LABEL_SELECT_PICKLIST":"Select Picklist",
         "LABEL_RESOURCE":"Resource",
@@ -34,6 +34,7 @@
         "TOOLTIP_JSON_TYPE_DATA":"Select the Field which has the data, only json type fields will be available in the dropdown",
         "TOOLTIP_JSON_RECORD_FIELD":"This widget requires only one JSON record to work hence It is recommended to apply a filter, in case of multiple records first record will be assumed",
         "MESSAGE_NO_RECORDS_FOUND":"No records found!",
-        "MESSAGE_NO_NODES_LINKS":"Nodes and Links not created by the given data!"
+        "MESSAGE_NO_NODES_LINKS":"Nodes and Links not created by the given data!",
+        "MESSAGE_LINKED":"Linked"
     }
 }

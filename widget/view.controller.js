@@ -9,7 +9,7 @@
     .module('cybersponse')
     .controller('socOverviewSankey200Ctrl', socOverviewSankey200Ctrl);
 
-  socOverviewSankey200Ctrl.$inject = ['$scope', '$rootScope', 'config', '$http', '$q', 'Query', 'API', '_', 'currentDateMinusService', 'PagedCollection', 'widgetUtilityService'];
+  socOverviewSankey200Ctrl.$inject = ['$scope', '$rootScope', 'config', '_', 'PagedCollection', 'widgetUtilityService', 'socOverviewSankeyService'];
 
   function socOverviewSankey200Ctrl($scope, $rootScope, config, _, PagedCollection, widgetUtilityService, socOverviewSankeyService) {
 
@@ -81,18 +81,16 @@
     //fetch live data
     function fetchData() {
       socOverviewSankeyService.getResourceAggregate($scope.config,$scope.duration).then(function (result) {
-        $scope.processing = false;
         if (result && result['hydra:member'] && result['hydra:member'].length > 0) {
           let dataToPlot = result['hydra:member'];
           createDataToPlot(dataToPlot);
         } else {
           errorMessage = $scope.viewWidgetVars.MESSAGE_NO_RECORDS_FOUND;
-          renderNoRecordMessage(errorMessage);
+          renderNoRecordMessage();
         }
-      }, function (error) {
-        $scope.processing = false;
+      }, function () {
         errorMessage = $scope.viewWidgetVars.MESSAGE_NO_RECORDS_FOUND;
-        renderNoRecordMessage(errorMessage);
+        renderNoRecordMessage();
       }).finally(function () {
         $scope.processing = false;
       });
@@ -154,7 +152,6 @@
           node.color = nodeColorMap[node.name];
         }
       });
-      //fetchJSONData();
       // Append input JSON data for Source/External Json nodes
       // ToDo: Add API call to fetch JSON data in global variable, if API fail, then accept data from JSON field
       
@@ -182,7 +179,7 @@
         renderSankeyChart();
       }else{
         errorMessage = $scope.viewWidgetVars.MESSAGE_NO_NODES_LINKS;
-        renderNoRecordMessage('Nodes and Links not created by the given data')
+        renderNoRecordMessage();
       }
     
     }
@@ -195,7 +192,8 @@
       var pagedTotalData = new PagedCollection($scope.config.customModule, null, null);
       pagedTotalData.loadByPost(filters).then(function () {
         if (pagedTotalData.fieldRows.length === 0) {
-
+          errorMessage = $scope.viewWidgetVars.MESSAGE_NO_RECORDS_FOUND;
+          renderNoRecordMessage();
           return;
         }
         var data = pagedTotalData.fieldRows[0][$scope.config.customModuleField].value;

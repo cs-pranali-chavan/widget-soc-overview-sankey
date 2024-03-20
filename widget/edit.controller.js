@@ -29,15 +29,7 @@
     $scope.config.entityTrackable = true;
     $scope.config.layers = $scope.config.layers || [];
     if ($scope.config.layers.length === 0) {
-      $scope.config.layers.push({
-        label: "",
-        resource: "",
-        sourceNodesField: "",
-        targetNodeField: "",
-        targetNodeSubField: "",
-        targetNodeType: "",
-        targetNodeSubType: ""
-      });
+       insertLayerObject();
     }
     else if ($scope.config.layers.length >= 3) {
       $scope.maxlayers = true;
@@ -65,16 +57,6 @@
       });
     }
 
-    $scope.$watch('config.customModule', function (oldValue, newValue) {
-      if ($scope.config.customModule && oldValue !== newValue) {
-        if ($scope.config.query && $scope.config.query.filters) {
-          delete $scope.config.query.filters;
-        }
-        delete $scope.config.customModuleField;
-        $scope.loadAttributesForCustomModule();
-      }
-    });
-
     function onChangeModuleType() {
       changeAttribute();
       delete $scope.config.query;
@@ -85,20 +67,8 @@
     function loadModules() {
       appModulesService.load(true).then(function (modules) {
         $scope.modules = modules;
-      });
-      if ($scope.config.resource) {
-        $scope.fetchAttributes();
-      }
-      loadJSONModule();
-    }
-
-    //to load json obect modules
-    function loadJSONModule() {
-      appModulesService.load(true).then(function (modules) {
-        $scope.modules = modules;
-
         //Create a list of modules with atleast one JSON field
-        modules.forEach((module) => {
+        $scope.modules.forEach((module) => {
           var moduleMetaData = modelMetadatasService.getMetadataByModuleType(module.type);
           for (let fieldIndex = 0; fieldIndex < moduleMetaData.attributes.length; fieldIndex++) {
             //Check If JSON field is present in the module
@@ -107,19 +77,22 @@
               break;
             }
           }
-        })
+        });
       });
+      if ($scope.config.resource) {
+        $scope.fetchAttributes();
+      }
     }
 
     // fetch attributes when there is change in module selection
     function changeAttribute() {
       $scope.config.layers = [];
-      insertLayerObect();
+      insertLayerObject();
       fetchAttributes();
     }
 
     //insert empty layer object
-    function insertLayerObect() {
+    function  insertLayerObject(){
       $scope.config.layers.push({
         label: "",
         resource: "",
@@ -145,7 +118,7 @@
         $scope.params.targetNodeFields = _.sortBy($scope.params.targetNodeFields, 'name');
 
         if ($scope.config.layers.length === 0) {
-          insertLayerObect();
+           insertLayerObject();
         }
         else {
           $scope.config.layers.forEach(function (element, index) {
@@ -192,7 +165,7 @@
 
     function addLayer() {
       if ($scope.config.layers.length < 3) {
-        insertLayerObect();
+         insertLayerObject();
       }
       else {
         $scope.maxlayers = true;
@@ -226,11 +199,11 @@
             LABEL_FILTER_RECORD: widgetUtilityService.translate('checkTranslation.LABEL_FILTER_RECORD'),
             LABEL_SELECT_A_MODULE: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_A_MODULE'),
             LABEL_FILTER_CRITERIA: widgetUtilityService.translate('checkTranslation.LABEL_FILTER_CRITERIA'),
-            LABEL_LABELTEXT: widgetUtilityService.translate('checkTranslation.LABEL_LABELTEXT'),
-            LABEL_SOURCE_NODES: widgetUtilityService.translate('checkTranslation.LABEL_SOURCE_NODES'),
-            LABEL_SELECT_SOURCE_NODES: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_SOURCE_NODES'),
-            LABEL_TARGET_NODES: widgetUtilityService.translate('checkTranslation.LABEL_TARGET_NODES'),
-            LABEL_SELECT_TARGET_NODES: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_TARGET_NODES'),
+            LABEL: widgetUtilityService.translate('checkTranslation.LABEL'),
+            LABEL_SOURCE_NODE: widgetUtilityService.translate('checkTranslation.LABEL_SOURCE_NODE'),
+            LABEL_SELECT_SOURCE_NODE: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_SOURCE_NODE'),
+            LABEL_TARGET_NODE: widgetUtilityService.translate('checkTranslation.LABEL_TARGET_NODE'),
+            LABEL_SELECT_TARGET_NODE: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_TARGET_NODE'),
             LABEL_TARGET_NODE_PICKLIST: widgetUtilityService.translate('checkTranslation.LABEL_TARGET_NODE_PICKLIST'),
             LABEL_SELECT_PICKLIST: widgetUtilityService.translate('checkTranslation.LABEL_SELECT_PICKLIST'),
             LABEL_RESOURCE: widgetUtilityService.translate('checkTranslation.LABEL_RESOURCE'),
@@ -238,12 +211,13 @@
             BUTTON_SAVE: widgetUtilityService.translate('checkTranslation.BUTTON_SAVE'),
             BUTTON_CLOSE: widgetUtilityService.translate('checkTranslation.BUTTON_CLOSE'),
             TEXT_IS_NOT_TRACKABLE: widgetUtilityService.translate('checkTranslation.TEXT_IS_NOT_TRACKABLE'),
-            TOOLTIP_DATASOURCE: widgetUtilityService.translate('checkTranslation.TOOLTIP_DATASOURCE'),
+            TOOLTIP_DATASOURCE:  widgetUtilityService.translate('checkTranslation.TOOLTIP_DATASOURCE'),
             TOOLTIP_JSONDATA: widgetUtilityService.translate('checkTranslation.TOOLTIP_JSONDATA'),
             TOOLTIP_LIVEDATA: widgetUtilityService.translate('checkTranslation.TOOLTIP_LIVEDATA'),
             TOOLTIP_JSON_SELECT_MODULE: widgetUtilityService.translate('checkTranslation.TOOLTIP_JSON_SELECT_MODULE'),
             TOOLTIP_JSON_TYPE_DATA: widgetUtilityService.translate('checkTranslation.TOOLTIP_JSON_TYPE_DATA'),
-            TOOLTIP_JSON_RECORD_FIELD: widgetUtilityService.translate('checkTranslation.TOOLTIP_JSON_RECORD_FIELD')
+            TOOLTIP_JSON_RECORD_FIELD: widgetUtilityService.translate('checkTranslation.TOOLTIP_JSON_RECORD_FIELD'),
+            MESSAGE_LINKED: widgetUtilityService.translate('checkTranslation.MESSAGE_LINKED')
           };
           $scope.header = $scope.config.title ? $scope.viewWidgetVars.HEADER_EDIT_CHART : $scope.viewWidgetVars.HEADER_ADD_CHART;
         });
