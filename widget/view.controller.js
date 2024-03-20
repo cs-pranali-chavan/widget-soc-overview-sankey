@@ -439,11 +439,11 @@
       widgetUtilityService.checkTranslationMode($scope.$parent.model.type).then(function () {
         $scope.viewWidgetVars = {
           // Create your translating static string variables here
-          BUTTON_LAST_6_MONTHS : widgetUtilityService.translate('checkTranslation.BUTTON_LAST_6_MONTHS'),
-          BUTTON_LAST_3_MONTHS : widgetUtilityService.translate('checkTranslation.BUTTON_LAST_3_MONTHS'),
-          BUTTON_LAST_30_DAYS : widgetUtilityService.translate('checkTranslation.BUTTON_LAST_30_DAYS'),
-          MESSAGE_NO_RECORDS_FOUND : widgetUtilityService.translate('checkTranslation.MESSAGE_NO_RECORDS_FOUND'),
-          MESSAGE_NO_NODES_LINKS : widgetUtilityService.translate('checkTranslation.MESSAGE_NO_NODES_LINKS')
+          BUTTON_LAST_6_MONTHS : widgetUtilityService.translate('socOverviewSankey.BUTTON_LAST_6_MONTHS'),
+          BUTTON_LAST_3_MONTHS : widgetUtilityService.translate('socOverviewSankey.BUTTON_LAST_3_MONTHS'),
+          BUTTON_LAST_30_DAYS : widgetUtilityService.translate('socOverviewSankey.BUTTON_LAST_30_DAYS'),
+          MESSAGE_NO_RECORDS_FOUND : widgetUtilityService.translate('socOverviewSankey.MESSAGE_NO_RECORDS_FOUND'),
+          MESSAGE_NO_NODES_LINKS : widgetUtilityService.translate('socOverviewSankey.MESSAGE_NO_NODES_LINKS')
         };
       });
     }
