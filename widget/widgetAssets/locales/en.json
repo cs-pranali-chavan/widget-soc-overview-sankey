@@ -10,7 +10,7 @@
         "LABEL_GET_LIVE_DATA":"Get Live Data",
         "LABEL_SELECT_FIELD":"Select Field",
         "LABEL_FILTER_RECORD":"Filter Record Which Contains The JSON Data",
-        "LABEL_SELECT_A_MODULE":"Select a module wich contains JSON field",
+        "LABEL_SELECT_A_MODULE":"Select a module which contains JSON field",
         "LABEL_FILTER_CRITERIA":"Filter Criteria",
         "LABEL":"Label",
         "LABEL_SOURCE_NODE":"Source Node",
