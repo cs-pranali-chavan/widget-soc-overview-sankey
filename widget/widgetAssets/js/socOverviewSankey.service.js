@@ -14,7 +14,6 @@
     function socOverviewSankeyService($q, $http, currentDateMinusService, Query, API) {
         var service;
         var config;
-
         service = {
             getResourceAggregate: getResourceAggregate,
             loadJs: loadJs,

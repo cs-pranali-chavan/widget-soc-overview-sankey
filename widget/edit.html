@@ -2,7 +2,7 @@
   MIT License
   Copyright (c) 2024 Fortinet Inc
   Copyright end -->
-  <form data-ng-submit="save()" class="noMargin" name="editSankeyWidgetForm" data-ng-class="{'state-wait': processing }"
+<form data-ng-submit="save()" class="noMargin" name="editSankeyWidgetForm" data-ng-class="{'state-wait': processing }"
   novalidate>
   <div class="modal-header">
     <h3 class="modal-title col-md-9" data-ng-bind="::header"></h3>
@@ -15,7 +15,8 @@
     <div>
       <div class="form-group"
         data-ng-class="{ 'has-error': editSankeyWidgetForm.title.$invalid && editSankeyWidgetForm.title.$touched }">
-        <label for="title" class="control-label">{{viewWidgetVars.LABEL_TITLE}}<span class="text-danger">*</span></label>
+        <label for="title" class="control-label">{{viewWidgetVars.LABEL_TITLE}}<span
+            class="text-danger">*</span></label>
         <input id="title" name="title" type="text" class="form-control" data-ng-model="config.title" required>
         <div data-cs-messages="editSankeyWidgetForm.title">
         </div>
@@ -24,9 +25,8 @@
 
     <label for="editSankeyWidgetForm" class="control-label">{{viewWidgetVars.LABEL_DATASOURCE}}</label>
     <span class="text-danger">*
-      <span
-        data-uib-tooltip="{{viewWidgetVars.TOOLTIP_DATASOURCE}}"
-        data-tooltip-append-to-body="true"><i class="icon icon-information font-Size-13"></i></span>
+      <span data-uib-tooltip="{{viewWidgetVars.TOOLTIP_DATASOURCE}}" data-tooltip-append-to-body="true"><i
+          class="icon icon-information font-Size-13"></i></span>
     </span>
     <!-- Radio Button -->
 
@@ -34,13 +34,15 @@
       <div class="col-md-6 padding-right-0">
         <div class="radio">
           <label><input id="JsonField" name="JsonField" type="radio" data-ng-model="config.moduleType"
-              data-ng-change="onChangeModuleType()" value="Single Module">&nbsp;&nbsp;{{viewWidgetVars.LABEL_RECORD_CONTAINING_JSON_DATA}}</label>
-          <span data-uib-tooltip="{{viewWidgetVars.TOOLTIP_JSONDATA}}"
-            data-tooltip-append-to-body="true"><i class="icon icon-information font-Size-13"></i></span>
+              data-ng-change="onChangeModuleType()"
+              value="Single Module">&nbsp;&nbsp;{{viewWidgetVars.LABEL_RECORD_CONTAINING_JSON_DATA}}</label>
+          <span data-uib-tooltip="{{viewWidgetVars.TOOLTIP_JSONDATA}}" data-tooltip-append-to-body="true"><i
+              class="icon icon-information font-Size-13"></i></span>
         </div>
         <div class="radio">
           <label><input id="accrossModules" name="accrossModules" type="radio" data-ng-model="config.moduleType"
-              data-ng-change="onChangeModuleType()" value="Across Modules">&nbsp;&nbsp;{{viewWidgetVars.LABEL_GET_LIVE_DATA}}</label>
+              data-ng-change="onChangeModuleType()"
+              value="Across Modules">&nbsp;&nbsp;{{viewWidgetVars.LABEL_GET_LIVE_DATA}}</label>
           <span data-uib-tooltip="{{viewWidgetVars.TOOLTIP_LIVEDATA}}" data-tooltip-append-to-body="true"><i
               class="icon icon-information font-Size-13"></i></span>
         </div>
@@ -71,9 +73,8 @@
             <label class="control-label">{{viewWidgetVars.LABEL_SELECT_FIELD}}
               <span class="text-danger">*</span>
             </label>
-            <span
-              data-uib-tooltip="{{viewWidgetVars.TOOLTIP_JSON_TYPE_DATA}}"
-              data-tooltip-append-to-body="true"><i class="icon icon-information font-Size-13"></i></span>
+            <span data-uib-tooltip="{{viewWidgetVars.TOOLTIP_JSON_TYPE_DATA}}" data-tooltip-append-to-body="true"><i
+                class="icon icon-information font-Size-13"></i></span>
             <select class="form-control" name="customModuleField" id="customModuleField"
               data-ng-options="field.name as field.title for field in objectFields"
               data-ng-model="config.customModuleField" required>
@@ -85,9 +86,8 @@
             <label class="control-label">{{viewWidgetVars.LABEL_FILTER_RECORD}}
               <span class="text-danger">*</span>
             </label>
-            <span
-              data-uib-tooltip="{{viewWidgetVars.TOOLTIP_JSON_RECORD_FIELD}}"
-              data-tooltip-append-to-body="true"><i class="icon icon-information font-Size-13"></i></span>
+            <span data-uib-tooltip="{{viewWidgetVars.TOOLTIP_JSON_RECORD_FIELD}}" data-tooltip-append-to-body="true"><i
+                class="icon icon-information font-Size-13"></i></span>
             <div data-cs-conditional data-ng-if="fieldsArray.length > 0" data-fields="$parent.fields"
               data-reset-field="$parent.fields" data-mode="'queryFilters'" data-ng-model="$parent.config.query"
               data-parent-form="editSankeyWidgetForm" name="filterJsonRecord"
@@ -111,25 +111,28 @@
             <div class="form-group"
               data-ng-class="{ 'has-error': editSankeyWidgetForm.resource.$invalid && editSankeyWidgetForm.resource.$touched }"
               data-ng-if="modules">
-              <label for="resource" class="control-label">{{viewWidgetVars.LABEL_RESOURCE}}<span class="text-danger">*</span></label>
+              <label for="resource" class="control-label">{{viewWidgetVars.LABEL_RESOURCE}}<span
+                  class="text-danger">*</span></label>
               <select name="resource" id="resource" class="form-control"
                 data-ng-options="module.type as module.name for module in modules" data-ng-model="config.resource"
                 required data-ng-change="changeAttribute()">
                 <option value="">{{viewWidgetVars.LABEL_SELECT_AN_OPTION}}</option>
               </select>
-              <div data-ng-if="!config.entityTrackable" class="cs-label">{{config.resource | uppercase}} {{viewWidgetVars.TEXT_IS_NOT_TRACKABLE}}</div>
+              <div data-ng-if="!config.entityTrackable" class="cs-label">{{config.resource | uppercase}}
+                {{viewWidgetVars.TEXT_IS_NOT_TRACKABLE}}</div>
               <div data-cs-messages="editSankeyWidgetForm.resource"></div>
             </div>
             <div class="form-group" data-ng-if="config.resource">
               <label for="resource-filter" class="control-label">{{viewWidgetVars.LABEL_FILTER_CRITERIA}}</label>
-              <div data-cs-conditional data-mode="'queryFilters'"
-                name="resource-filter" data-fields="$parent.params.formFields" data-ng-model="$parent.config.query"
+              <div data-cs-conditional data-mode="'queryFilters'" name="resource-filter"
+                data-fields="$parent.params.formFields" data-ng-model="$parent.config.query"
                 data-form-name="'editSankeyWidgetForm'" data-parent-form="editSankeyWidgetForm"
                 data-reset-field="$parent.params.formFields"></div>
             </div>
           </div>
           <div class="form-group" data-ng-if="config.resource">
-            <label for="linkLabel-{{$index}}" class="control-label">{{viewWidgetVars.LABEL}}<span class="text-danger">*</span></label>
+            <label for="linkLabel-{{$index}}" class="control-label">{{viewWidgetVars.LABEL}}<span
+                class="text-danger">*</span></label>
             <input id="linkLabel-{{$index}}" name="linkLabel-{{$index}}" type="text" class="form-control"
               data-ng-model="item.label" required>
             <div data-cs-messages="editSankeyWidgetForm['linkLabel-'+$index]"></div>
@@ -137,7 +140,8 @@
           <div class="form-group"
             data-ng-class="{ 'has-error': editSankeyWidgetForm['sourceNodesField-'+ $index].$invalid && editSankeyWidgetForm['sourceNodesField-'+ $index].$touched }"
             data-ng-if="config.resource && params.sourceNodeFields">
-            <label for="sourceNodesField-{{$index}}" class="control-label">{{viewWidgetVars.LABEL_SOURCE_NODE}}<span class="text-danger">*</span></label>
+            <label for="sourceNodesField-{{$index}}" class="control-label">{{viewWidgetVars.LABEL_SOURCE_NODE}}<span
+                class="text-danger">*</span></label>
             <select name="sourceNodesField-{{$index}}" id="sourceNodesField-{{$index}}" class="form-control"
               data-ng-options="field.name as field.title for field in params.sourceNodeFields"
               data-ng-model="item.sourceNodesField" required data-ng-if="$first">
@@ -148,7 +152,8 @@
               <label class="font-08em opacity-04">{{config.resource | uppercase}} -> <span
                   data-ng-if="!(config.layers[$index - 1].targetNodeSubField)">{{config.layers[$index -
                   1].targetNodeField | uppercase}}</span><span
-                  data-ng-if="config.layers[$index - 1].targetNodeSubField"> {{viewWidgetVars.MESSAGE_LINKED}} {{config.layers[$index -
+                  data-ng-if="config.layers[$index - 1].targetNodeSubField"> {{viewWidgetVars.MESSAGE_LINKED}}
+                  {{config.layers[$index -
                   1].targetNodeField | uppercase}} -> {{config.layers[$index - 1].targetNodeSubField |
                   uppercase}}</span></label>
             </div>
@@ -156,7 +161,8 @@
           <div class="form-group"
             data-ng-class="{ 'has-error': editSankeyWidgetForm['targetNodesField-'+ $index].$invalid && editSankeyWidgetForm['targetNodesField-'+ $index].$touched }"
             data-ng-if="config.resource && params.targetNodeFields">
-            <label for="targetNodesField-{{$index}}" class="control-label">{{viewWidgetVars.LABEL_TARGET_NODE}}<span class="text-danger">*</span></label>
+            <label for="targetNodesField-{{$index}}" class="control-label">{{viewWidgetVars.LABEL_TARGET_NODE}}<span
+                class="text-danger">*</span></label>
             <select name="targetNodesField-{{$index}}" id="targetNodesField-{{$index}}" class="form-control"
               data-ng-options="field.name as field.title for field in params.targetNodeFields"
               data-ng-change="onChangeTarget($index)" data-ng-model="item.targetNodeField" required>
@@ -167,7 +173,8 @@
           <div class="form-group"
             data-ng-class="{ 'has-error': editSankeyWidgetForm['targetNodesSubField-'+ $index].$invalid && editSankeyWidgetForm['targetNodesSubField-'+ $index].$touched }"
             data-ng-if="config.resource && params['targetNodesSubFields_'+$index].length>0">
-            <label for="targetNodesSubFields-{{$index}}" class="control-label">{{viewWidgetVars.LABEL_TARGET_NODE_PICKLIST}}<span
+            <label for="targetNodesSubFields-{{$index}}"
+              class="control-label">{{viewWidgetVars.LABEL_TARGET_NODE_PICKLIST}}<span
                 class="text-danger">*</span></label>
             <select name="targetNodesSubFields-{{$index}}" id="targetNodesSubFields-{{$index}}" class="form-control"
               data-ng-options="field.name as field.title for field in params['targetNodesSubFields_'+$index]"
@@ -184,7 +191,8 @@
       </div>
       <div class="row margin-left-0 margin-top-lg margin-bottom-lg" style="padding-left: 5px;"
         data-ng-hide="processing || disabled || maxlayers || !config.resource">
-        <button data-ng-click="addLayer()" type="button" class="btn btn-primary btn-xs">+&nbsp;{{viewWidgetVars.BUTTON_ADD_LAYER}}
+        <button data-ng-click="addLayer()" type="button"
+          class="btn btn-primary btn-xs">+&nbsp;{{viewWidgetVars.BUTTON_ADD_LAYER}}
         </button>
       </div>
     </div>

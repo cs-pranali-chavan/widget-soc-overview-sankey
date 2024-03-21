@@ -19,7 +19,7 @@
     var links = [];
     var nodeColorMap = [];
     var noOfSeries = 0;
-    var backgroundArea  = [];
+    var backgroundArea = [];
     var errorMessage = '';
     $scope.config = config;
     $scope.moduleType = $scope.config.moduleType;
@@ -80,7 +80,7 @@
 
     //fetch live data
     function fetchData() {
-      socOverviewSankeyService.getResourceAggregate($scope.config,$scope.duration).then(function (result) {
+      socOverviewSankeyService.getResourceAggregate($scope.config, $scope.duration).then(function (result) {
         if (result && result['hydra:member'] && result['hydra:member'].length > 0) {
           let dataToPlot = result['hydra:member'];
           createDataToPlot(dataToPlot);
@@ -104,45 +104,45 @@
       noOfSeries = $scope.config.layers.length + 1;
       let seriesNameArray = [];
       backgroundArea = [];
-      var replacedArray = _.map(dataToPlot, function(obj) {
-        return _.mapObject(obj, function(value, key) {
-            return value === null ? "Unknown" : value;
+      var replacedArray = _.map(dataToPlot, function (obj) {
+        return _.mapObject(obj, function (value, key) {
+          return value === null ? "Unknown" : value;
         });
       });
       dataToPlot = replacedArray;
       // Form JSON Data
-     for(var i = 0; i < noOfSeries; i++){
-        seriesNameArray.push(['series_'+i]);
-        seriesArray.push(_.filter(_.map(dataToPlot, item => item['series_'+i]), (item, index, arr) => item !== null && arr.indexOf(item) == index));    
+      for (var i = 0; i < noOfSeries; i++) {
+        seriesNameArray.push(['series_' + i]);
+        seriesArray.push(_.filter(_.map(dataToPlot, item => item['series_' + i]), (item, index, arr) => item !== null && arr.indexOf(item) == index));
       };
-      seriesArray.forEach((element,s) => {
-        if(element.length >0){
-          if($scope.config.moduleType === 'Across Modules' && $scope.config.layers[s]){
-            backgroundArea.push({'label':$scope.config.layers[s]['label']});
+      seriesArray.forEach((element, s) => {
+        if (element.length > 0) {
+          if ($scope.config.moduleType === 'Across Modules' && $scope.config.layers[s]) {
+            backgroundArea.push({ 'label': $scope.config.layers[s]['label'] });
           }
-          else{
-            if(s < (seriesArray.length-1)){
-              backgroundArea.push({'label':seriesNameArray[s]});
+          else {
+            if (s < (seriesArray.length - 1)) {
+              backgroundArea.push({ 'label': seriesNameArray[s] });
             }
           }
-          element.forEach((node,i) => {
+          element.forEach((node, i) => {
             nodesMap.push({
-              'name':node + '_' + s,
-              'idIndex' : idIndex
+              'name': node + '_' + s,
+              'idIndex': idIndex
             });
             nodes.push({
               "name": node,
               "id": idIndex++
             });
-            });
+          });
         }
       });
       dataToPlot.forEach((item, index) => {
         for (let c = 0; c < seriesNameArray.length; c++) {
-          if (item[seriesNameArray[c]+'_color'] !== 'Unknown'){
-            nodeColorMap[item[seriesNameArray[c]]] = item[seriesNameArray[c]+'_color'];
+          if (item[seriesNameArray[c] + '_color'] !== 'Unknown') {
+            nodeColorMap[item[seriesNameArray[c]]] = item[seriesNameArray[c] + '_color'];
           }
-          else{
+          else {
             nodeColorMap[item[seriesNameArray[c]]] = socOverviewSankeyService.getRandomDarkColor();
           }
         }
@@ -154,34 +154,34 @@
       });
       // Append input JSON data for Source/External Json nodes
       // ToDo: Add API call to fetch JSON data in global variable, if API fail, then accept data from JSON field
-      
+
       // create nodes and links data as per the dynamic series generated data
-      dataToPlot.forEach((link,index) => {
+      dataToPlot.forEach((link, index) => {
         for (let c = 0; c < seriesNameArray.length; c++) {
-          if (link[seriesNameArray[c]] && link[seriesNameArray[c+1]]) {
+          if (link[seriesNameArray[c]] && link[seriesNameArray[c + 1]]) {
             let linkData = {
-              "source": _.filter(nodesMap, { 'name': link[seriesNameArray[c]] + '_' + c})[0]['idIndex'],
-              "target": _.filter(nodesMap, { 'name': link[seriesNameArray[c+1]] + '_' + (c+1) })[0]['idIndex'],
+              "source": _.filter(nodesMap, { 'name': link[seriesNameArray[c]] + '_' + c })[0]['idIndex'],
+              "target": _.filter(nodesMap, { 'name': link[seriesNameArray[c + 1]] + '_' + (c + 1) })[0]['idIndex'],
               "value": link.total,
               "id": index
             };
             if (nodeColorMap[link[seriesNameArray[c]]]) {
-              linkData.color = nodeColorMap[link[seriesNameArray[c+1]]];
+              linkData.color = nodeColorMap[link[seriesNameArray[c + 1]]];
             }
             links.push(linkData);
           }
         }
       });
 
-      if(nodes.length > 0 && links.length>0){
+      if (nodes.length > 0 && links.length > 0) {
         chartData.nodes = nodes;
         chartData.links = links;
         renderSankeyChart();
-      }else{
+      } else {
         errorMessage = $scope.viewWidgetVars.MESSAGE_NO_NODES_LINKS;
         renderNoRecordMessage();
       }
-    
+
     }
 
     //to populate data for custom module
@@ -247,7 +247,7 @@
       const height = width > 1000 ? 800 : 600;
       var xPoint = 50;
       const noOfLinksColumn = backgroundArea.length;
-      const rectWidth = (width - (xPoint + (12*noOfLinksColumn))) / noOfLinksColumn;
+      const rectWidth = (width - (xPoint + (12 * noOfLinksColumn))) / noOfLinksColumn;
       const gradientLeft = $rootScope.theme.id === 'light' ? '#ffffff' : 'grey';
       const gradientRight = $rootScope.theme.id === 'light' ? '#bbbbbb' : 'black'; // #bbbbbb
       const backgroundStroke = $rootScope.theme.id === 'light' ? '#bbbbbb' : '#808080';
@@ -256,18 +256,18 @@
       let backgroundRect = [];
 
       //to draw rectangular background
-      backgroundArea.forEach(function(element,index){
-        if(index > 0){
+      backgroundArea.forEach(function (element, index) {
+        if (index > 0) {
           xPoint = xPoint + (rectWidth) + (12);
         }
-          backgroundRect.push({
-            'name': element.label,
-            'xPoint': xPoint,
-            'index': index,
-            'width': rectWidth
+        backgroundRect.push({
+          'name': element.label,
+          'xPoint': xPoint,
+          'index': index,
+          'width': rectWidth
         });
       });
-     
+
       // const rectWidth = ((width - 150) - (12 * backgroundRect.length)) / (backgroundRect.length - 1);
       sankey = d3.sankey()
         .nodeSort((a, b) => a.id - b.id)
@@ -439,11 +439,11 @@
       widgetUtilityService.checkTranslationMode($scope.$parent.model.type).then(function () {
         $scope.viewWidgetVars = {
           // Create your translating static string variables here
-          BUTTON_LAST_6_MONTHS : widgetUtilityService.translate('socOverviewSankey.BUTTON_LAST_6_MONTHS'),
-          BUTTON_LAST_3_MONTHS : widgetUtilityService.translate('socOverviewSankey.BUTTON_LAST_3_MONTHS'),
-          BUTTON_LAST_30_DAYS : widgetUtilityService.translate('socOverviewSankey.BUTTON_LAST_30_DAYS'),
-          MESSAGE_NO_RECORDS_FOUND : widgetUtilityService.translate('socOverviewSankey.MESSAGE_NO_RECORDS_FOUND'),
-          MESSAGE_NO_NODES_LINKS : widgetUtilityService.translate('socOverviewSankey.MESSAGE_NO_NODES_LINKS')
+          BUTTON_LAST_6_MONTHS: widgetUtilityService.translate('socOverviewSankey.BUTTON_LAST_6_MONTHS'),
+          BUTTON_LAST_3_MONTHS: widgetUtilityService.translate('socOverviewSankey.BUTTON_LAST_3_MONTHS'),
+          BUTTON_LAST_30_DAYS: widgetUtilityService.translate('socOverviewSankey.BUTTON_LAST_30_DAYS'),
+          MESSAGE_NO_RECORDS_FOUND: widgetUtilityService.translate('socOverviewSankey.MESSAGE_NO_RECORDS_FOUND'),
+          MESSAGE_NO_NODES_LINKS: widgetUtilityService.translate('socOverviewSankey.MESSAGE_NO_NODES_LINKS')
         };
       });
     }

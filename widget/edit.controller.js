@@ -29,7 +29,7 @@
     $scope.config.entityTrackable = true;
     $scope.config.layers = $scope.config.layers || [];
     if ($scope.config.layers.length === 0) {
-       insertLayerObject();
+      insertLayerObject();
     }
     else if ($scope.config.layers.length >= 3) {
       $scope.maxlayers = true;
@@ -92,7 +92,7 @@
     }
 
     //insert empty layer object
-    function  insertLayerObject(){
+    function insertLayerObject() {
       $scope.config.layers.push({
         label: "",
         resource: "",
@@ -118,7 +118,7 @@
         $scope.params.targetNodeFields = _.sortBy($scope.params.targetNodeFields, 'name');
 
         if ($scope.config.layers.length === 0) {
-           insertLayerObject();
+          insertLayerObject();
         }
         else {
           $scope.config.layers.forEach(function (element, index) {
@@ -165,7 +165,7 @@
 
     function addLayer() {
       if ($scope.config.layers.length < 3) {
-         insertLayerObject();
+        insertLayerObject();
       }
       else {
         $scope.maxlayers = true;
@@ -211,7 +211,7 @@
             BUTTON_SAVE: widgetUtilityService.translate('socOverviewSankey.BUTTON_SAVE'),
             BUTTON_CLOSE: widgetUtilityService.translate('socOverviewSankey.BUTTON_CLOSE'),
             TEXT_IS_NOT_TRACKABLE: widgetUtilityService.translate('socOverviewSankey.TEXT_IS_NOT_TRACKABLE'),
-            TOOLTIP_DATASOURCE:  widgetUtilityService.translate('socOverviewSankey.TOOLTIP_DATASOURCE'),
+            TOOLTIP_DATASOURCE: widgetUtilityService.translate('socOverviewSankey.TOOLTIP_DATASOURCE'),
             TOOLTIP_JSONDATA: widgetUtilityService.translate('socOverviewSankey.TOOLTIP_JSONDATA'),
             TOOLTIP_LIVEDATA: widgetUtilityService.translate('socOverviewSankey.TOOLTIP_LIVEDATA'),
             TOOLTIP_JSON_SELECT_MODULE: widgetUtilityService.translate('socOverviewSankey.TOOLTIP_JSON_SELECT_MODULE'),

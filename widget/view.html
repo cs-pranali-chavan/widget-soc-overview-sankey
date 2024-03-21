@@ -20,9 +20,8 @@
             <div data-ng-repeat="button in config.buttons">
                 <button id="{{ ::button.id }}" class="list-action btn btn-md cs-btn-100"
                     data-ng-disabled="button.disabled" data-ng-class="button.active ? 'btn-primary' : 'btn-default'"
-                    type="{{button.type}}" data-ng-click="button.onClick()" data-ng-hide="button.hide">{{
-                    viewWidgetVars[button.text]
-                    }}</button>
+                    type="{{button.type}}" data-ng-click="button.onClick()"
+                    data-ng-hide="button.hide">{{viewWidgetVars[button.text]}}</button>
             </div>
         </div>
         <div data-ng-if="processing">
