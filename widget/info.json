@@ -13,11 +13,8 @@
         ],
         "certified": "No",
         "publisher": "Fortinet",
-        "snapshots": [
-            "https:\/\/repo.fortisoar.fortinet.com\/fsr-widgets\/socOverviewSankey-2.0.0\/images\/soc-overview-sankey-settings.png",
-            "https:\/\/repo.fortisoar.fortinet.com\/fsr-widgets\/socOverviewSankey-2.0.0\/images\/soc-overview-sankey.png"
-        ],
-        "help_online": "https:\/\/github.com\/fortinet-fortisoar\/widget-soc-overview-sankey\/blob\/release\/2.0.0\/README.md",
+        "snapshots": [],
+        "help_online": "",
         "compatibility": [
             "7.4.2"
         ]
