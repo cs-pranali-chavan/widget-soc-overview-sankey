@@ -8,9 +8,9 @@
     .module('cybersponse')
     .controller('editSocOverviewSankey200Ctrl', editSocOverviewSankey200Ctrl);
 
-  editSocOverviewSankey200Ctrl.$inject = ['$scope', '$uibModalInstance', 'config', 'appModulesService', 'Entity', 'modelMetadatasService', 'widgetUtilityService', '$timeout'];
+  editSocOverviewSankey200Ctrl.$inject = ['$scope', '$uibModalInstance', 'config', 'appModulesService', 'Entity', 'modelMetadatasService', 'widgetUtilityService', '$timeout', '$filter'];
 
-  function editSocOverviewSankey200Ctrl($scope, $uibModalInstance, config, appModulesService, Entity, modelMetadatasService, widgetUtilityService, $timeout) {
+  function editSocOverviewSankey200Ctrl($scope, $uibModalInstance, config, appModulesService, Entity, modelMetadatasService, widgetUtilityService, $timeout, $filter) {
     $scope.cancel = cancel;
     $scope.save = save;
     $scope.config = config;
@@ -210,7 +210,7 @@
             BUTTON_ADD_LAYER: widgetUtilityService.translate('socOverviewSankey.BUTTON_ADD_LAYER'),
             BUTTON_SAVE: widgetUtilityService.translate('socOverviewSankey.BUTTON_SAVE'),
             BUTTON_CLOSE: widgetUtilityService.translate('socOverviewSankey.BUTTON_CLOSE'),
-            TEXT_IS_NOT_TRACKABLE: widgetUtilityService.translate('socOverviewSankey.TEXT_IS_NOT_TRACKABLE'),
+            TEXT_IS_NOT_TRACKABLE: $filter('csSanitizeHTML')(widgetUtilityService.translate('socOverviewSankey.TEXT_IS_NOT_TRACKABLE',{'moduleName' : $scope.config.resource.toUpperCase()})),
             TOOLTIP_DATASOURCE: widgetUtilityService.translate('socOverviewSankey.TOOLTIP_DATASOURCE'),
             TOOLTIP_JSONDATA: widgetUtilityService.translate('socOverviewSankey.TOOLTIP_JSONDATA'),
             TOOLTIP_LIVEDATA: widgetUtilityService.translate('socOverviewSankey.TOOLTIP_LIVEDATA'),

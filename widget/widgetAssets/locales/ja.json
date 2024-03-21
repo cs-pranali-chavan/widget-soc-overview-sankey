@@ -26,7 +26,7 @@
         "BUTTON_LAST_6_MONTHS": "最後の6ヶ月",
         "BUTTON_LAST_3_MONTHS": "最後の3ヶ月",
         "BUTTON_LAST_30_DAYS": "最後の30日間",
-        "TEXT_IS_NOT_TRACKABLE": "は追跡できません",
+        "TEXT_IS_NOT_TRACKABLE": "{{moduleName}}は追跡できません。",
         "TOOLTIP_DATASOURCE":"「すべてのレコードがモジュールの特定のフィールドの単一のレコードに含まれている場合は、「JSON データを含むレコード」オプションを選択してください。『モジュール別レコード数』データセットを選択すると、モジュールを選択して、指定されたフィルターに基づいてモジュールのレコード数が表示されます。」",
         "TOOLTIP_JSONDATA":"JSONオブジェクトを含む単一のレコードを選択できます。",
         "TOOLTIP_LIVEDATA":"ライブカウントを取得できます。",

@@ -26,7 +26,7 @@
         "BUTTON_LAST_6_MONTHS":"最近6个月",
         "BUTTON_LAST_3_MONTHS":"最近3个月",
         "BUTTON_LAST_30_DAYS":"最近30天",
-        "TEXT_IS_NOT_TRACKABLE": "无法追踪",
+        "TEXT_IS_NOT_TRACKABLE": "{{moduleName}}不可追踪。",
         "TOOLTIP_DATASOURCE":"如果所有要呈现的记录都在某个模块的特定字段的单个记录中，请选择“包含 JSON 数据的记录”选项。选择“模块中的记录数”数据集，您可以选择模块，并根据给定的筛选器显示模块的记录数。",
         "TOOLTIP_JSONDATA":"可以选择包含 JSON 对象的单个记录。",
         "TOOLTIP_LIVEDATA":"它允许您获取实时计数。",

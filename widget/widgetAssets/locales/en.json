@@ -26,7 +26,7 @@
         "BUTTON_LAST_6_MONTHS":"Last 6 Months",
         "BUTTON_LAST_3_MONTHS":"Last 3 Months",
         "BUTTON_LAST_30_DAYS":"Last 30 Days",
-        "TEXT_IS_NOT_TRACKABLE":"is not trackable",
+        "TEXT_IS_NOT_TRACKABLE":"{{moduleName}} is not trackable",
         "TOOLTIP_DATASOURCE":"Select the 'Record Containing JSON Data' option if all the records to be rendered are in a single record of a certain field of the module.'Count of Records Across Module' Dataset lets you select the module and it displays the count of records for the module based on the filters given",
         "TOOLTIP_JSONDATA":"It allows you to select single record that contains a JSON object.",
         "TOOLTIP_LIVEDATA":"It allows you to get live count.",
