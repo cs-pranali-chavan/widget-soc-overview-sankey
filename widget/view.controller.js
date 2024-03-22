@@ -407,7 +407,7 @@
           .attr('class', d => `trajectory_${d.id}`)
           .attr("d", d3.sankeyLinkHorizontal())
           .attr("stroke", d => d.color ? d.color : d3.schemeSet1[4])
-          .attr('stroke-opacity', 0.2) // 0.2
+          .attr('stroke-opacity', 0.4) // 0.2
           .attr("stroke-width", d => Math.max(1, d.width));
   
         link.append("title")
