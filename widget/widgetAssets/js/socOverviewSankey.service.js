@@ -136,13 +136,30 @@
                       type: 'datetime'
                   }];
               }
-  
-              let dataFilters = config.filters ? angular.copy(config.filters) : {};
-              if (dataFilters.filters) {
-                  dataFilters.filters.push(frontFilter);
-              } else {
-                  dataFilters = frontFilter;
-              }
+              for (var i = 0; i < config.layers.length; i++) {
+                let currentLayer = config.layers[i];
+                if(currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany'){
+                    if(currentLayer['targetNodeSubField'] !== ''){
+                        frontFilter.filters.push({
+                            field: currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue',
+                            operator: 'isnull',
+                            value: false
+                    });
+                }
+                else if(currentLayer['targetNodeField'] !== '')
+                    frontFilter.filters.push({
+                            field: currentLayer['targetNodeField'] + '.itemValue',
+                            operator: 'isnull',
+                            value: false
+                    });
+                }  
+            }
+            let dataFilters = config.filters ? angular.copy(config.filters) : {};
+            if (dataFilters.filters) {
+                dataFilters.filters.push(frontFilter);
+            } else {
+                dataFilters = frontFilter;
+            }
   
               return dataFilters;
           }
