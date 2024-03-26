@@ -113,7 +113,7 @@
             queryObject.aggregates.push({
                 'operator': 'groupby',
                 'alias': 'series_' + elementIndex,
-                'field': currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeSubField']
+                'field': currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeField'].currentLayer['targetNodeSubField']
             });
             if (currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany') {
                 queryObject.aggregates.push({
@@ -132,7 +132,7 @@
                 let currentLayer = config.layers[i];
                 let _nullField = '';
                 if(currentLayer['targetNodeSubField'] !== ''){
-                    _nullField = currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeSubField'];
+                    _nullField = currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeField'].currentLayer['targetNodeSubField'];
                 }
                 else{
                     _nullField = currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.itemValue' : currentLayer['targetNodeField'];
