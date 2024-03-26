@@ -110,59 +110,57 @@
           }
   
           function pushTargetSubNodes(queryObject, elementIndex, currentLayer) {
-              queryObject.aggregates.push({
-                  'operator': 'groupby',
-                  'alias': 'series_' + elementIndex,
-                  'field': currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeSubField']
-              });
-              if (currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany') {
-                  queryObject.aggregates.push({
-                      'operator': 'groupby',
-                      'alias': 'series_' + elementIndex + '_color',
-                      'field': currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.color'
-                  });
-              }
-          }
-  
-  
-          function getFilters(duration) {
-              let frontFilter = {};
-              frontFilter.logic = 'AND';
-              if (config.entityTrackable) {
-                  frontFilter.filters = [{
-                      field: 'createDate',
-                      operator: 'gte',
-                      value: currentDateMinusService(duration),
-                      type: 'datetime'
-                  }];
-              }
-              for (var i = 0; i < config.layers.length; i++) {
-                let currentLayer = config.layers[i];
-                if(currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany'){
-                    if(currentLayer['targetNodeSubField'] !== ''){
-                        frontFilter.filters.push({
-                            field: currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue',
-                            operator: 'isnull',
-                            value: false
-                    });
-                }
-                else if(currentLayer['targetNodeField'] !== '')
-                    frontFilter.filters.push({
-                            field: currentLayer['targetNodeField'] + '.itemValue',
-                            operator: 'isnull',
-                            value: false
-                    });
-                }  
+            queryObject.aggregates.push({
+                'operator': 'groupby',
+                'alias': 'series_' + elementIndex,
+                'field': currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeSubField']
+            });
+            if (currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany') {
+                queryObject.aggregates.push({
+                    'operator': 'groupby',
+                    'alias': 'series_' + elementIndex + '_color',
+                    'field': currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.color'
+                });
             }
+        }
+
+
+        function getFilters(duration) {
+            let frontFilter = {};
+            frontFilter.filters = [];
+            for (var i = 0; i < config.layers.length; i++) {
+                let currentLayer = config.layers[i];
+                let _nullField = '';
+                if(currentLayer['targetNodeSubField'] !== ''){
+                    _nullField = currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeSubField'];
+                }
+                else{
+                    _nullField = currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.itemValue' : currentLayer['targetNodeField'];
+                }                
+                frontFilter.filters.push({
+                    field: _nullField,
+                    operator: 'isnull',
+                    value: false
+                });
+            }
+            frontFilter.logic = 'AND';
+            if (config.entityTrackable) {
+                frontFilter.filters.push({
+                    field: 'createDate',
+                    operator: 'gte',
+                    value: currentDateMinusService(duration),
+                    type: 'datetime'
+                });
+            }
+            
             let dataFilters = config.filters ? angular.copy(config.filters) : {};
             if (dataFilters.filters) {
                 dataFilters.filters.push(frontFilter);
             } else {
                 dataFilters = frontFilter;
             }
-  
-              return dataFilters;
-          }
+            return dataFilters;
+        }
   
           function getRandomDarkColor() {
               var red = Math.floor(Math.random() * 256); // Random value for red channel (0-255)
