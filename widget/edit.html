@@ -128,12 +128,14 @@
                 data-reset-field="$parent.params.formFields"></div>
             </div>
           </div>
+          <!-- Label -->
           <div class="form-group" data-ng-if="config.resource">
             <label for="linkLabel-{{$index}}" class="control-label">{{viewWidgetVars.LABEL}}<span class="text-danger">*</span></label>
             <input id="linkLabel-{{$index}}" name="linkLabel-{{$index}}" type="text" class="form-control"
               data-ng-model="item.label" required>
             <div data-cs-messages="editSankeyWidgetForm['linkLabel-'+$index]"></div>
           </div>
+          <!-- Source Node -->
           <div class="form-group"
             data-ng-class="{ 'has-error': editSankeyWidgetForm['sourceNodesField-'+ $index].$invalid && editSankeyWidgetForm['sourceNodesField-'+ $index].$touched }"
             data-ng-if="config.resource && params.sourceNodeFields">
@@ -153,6 +155,7 @@
                   uppercase}}</span></label>
             </div>
           </div>
+          <!-- Target Node -->
           <div class="form-group"
             data-ng-class="{ 'has-error': editSankeyWidgetForm['targetNodesField-'+ $index].$invalid && editSankeyWidgetForm['targetNodesField-'+ $index].$touched }"
             data-ng-if="config.resource && params.targetNodeFields">
@@ -164,9 +167,10 @@
             </select>
             <div data-cs-messages="editSankeyWidgetForm['targetNodesField-'+$index]"></div>
           </div>
+          <!-- Target Node Picklist -->
           <div class="form-group"
             data-ng-class="{ 'has-error': editSankeyWidgetForm['targetNodesSubField-'+ $index].$invalid && editSankeyWidgetForm['targetNodesSubField-'+ $index].$touched }"
-            data-ng-if="config.resource && params['targetNodesSubFields_'+$index].length>0">
+            data-ng-if="config.resource && params['targetNodesSubFields_'+$index].length>0  && item.targetNodeField">
             <label for="targetNodesSubFields-{{$index}}" class="control-label">{{viewWidgetVars.LABEL_TARGET_NODE_PICKLIST}}<span
                 class="text-danger">*</span></label>
             <select name="targetNodesSubFields-{{$index}}" id="targetNodesSubFields-{{$index}}" class="form-control"

@@ -94,13 +94,13 @@
       //insert empty layer object
       function  insertLayerObject(){
         $scope.config.layers.push({
-          label: "",
-          resource: "",
-          sourceNodesField: "",
-          targetNodeField: "",
-          targetNodeSubField: "",
-          targetNodeType: "",
-          targetNodeSubType: ""
+          label: null,
+          resource: null,
+          sourceNodesField: null,
+          targetNodeField: null,
+          targetNodeSubField: null,
+          targetNodeType: null,
+          targetNodeSubType: null
         });
       }
   
@@ -116,9 +116,11 @@
           $scope.params.sourceNodeFields = _.filter($scope.params['formFields'], function (field) {
             return field.type === 'text';
           });
-          $scope.params.targetNodeFields = angular.extend($scope.params.formFields, $scope.params.relationshipFieldsArray);
-          $scope.params.targetNodeFields = _.sortBy($scope.params.targetNodeFields, 'name');
-  
+          $scope.params.selectedTargetNodeFields = _.filter($scope.params['formFields'], function (field) {
+            return field.type === 'text' || field.type === 'picklist';
+          });
+          $scope.params.extendedTargetNodeFields = angular.extend($scope.params.selectedTargetNodeFields, $scope.params.relationshipFieldsArray);
+          $scope.params.targetNodeFields = _.sortBy($scope.params.extendedTargetNodeFields, 'name');
           if ($scope.config.layers.length === 0) {
              insertLayerObject();
           }
@@ -135,7 +137,7 @@
       //change in target node selection
       function onChangeTarget(_index) {
         $scope.params['targetNodesSubFields_' + _index] = [];
-        $scope.config.layers[_index]['targetNodeSubField'] = '';
+        $scope.config.layers[_index]['targetNodeSubField'] = null;
         checkTargetType(_index);
       }
   
@@ -222,6 +224,7 @@
               MESSAGE_LINKED: widgetUtilityService.translate('socOverviewSankey.MESSAGE_LINKED')
             };
             $scope.header = $scope.config.title ? $scope.viewWidgetVars.HEADER_EDIT_CHART : $scope.viewWidgetVars.HEADER_ADD_CHART;
+            loadModules();
           });
         }
         else {
@@ -246,7 +249,6 @@
   
       function init() {
         _handleTranslations();
-        loadModules();
       }
   
       init();
