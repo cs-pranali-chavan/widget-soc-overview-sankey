@@ -58,7 +58,6 @@
       }
   
       function onChangeModuleType() {
-        changeAttribute();
         delete $scope.config.query;
         delete $scope.config.customModuleField;
         delete $scope.config.customModule;
@@ -168,10 +167,8 @@
       }
   
       function addLayer() {
-        if ($scope.config.layers.length < 3) {
-           insertLayerObject();
-        }
-        else {
+        insertLayerObject();
+        if ($scope.config.layers.length >= 3) {
           $scope.maxlayers = true;
         }
       }
