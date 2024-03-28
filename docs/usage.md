@@ -215,7 +215,7 @@ The **Get Live Data** option helps helps visualize relationship data as per beha
 10. For our example, we require three layers. In the second layer, specify the label of the layer as ` Severity > Type`, to represent the flow column from alert severity to alert type.   
  The **Source Node** field is already populated with the target node of the first layer, which is `Alerts -> Severity` in our example. Next, select the **Target Node** as **Type**. 
 
- ![](./res/sankey-edit-live-data-01.png)
+   ![](./res/sankey-edit-live-data-01.png)
 
 11. Click **Add Layer** to add the final layer in the widget. In this layer, we want to represent relationship data, i.e., the incidents related to alerts. In this layer, specify the label of the layer as ` Alert Type > Related Incidents Severity`, to represent the flow column from alert type to related incidents severity.  
      The **Source Node** field is already populated with the target node of the second layer, which is `Alerts -> Type` in our example.  
@@ -244,7 +244,6 @@ The following image displays a **SOC Overview Sankey** widget based on an exampl
     <strong><code>No records found!</code></strong>. Also, if the data selection is not valid then the nodes and links data are not formed correctly. In this case,  the <strong>SOC Overview Sankey</strong> widget displays the following message:<br><br>
     <strong><code>Nodes and Links not created by the given data!</code></strong></td>
 </table>
-
 
 
 | [Installation](./setup.md#installation) | [Configuration](./setup.md#configuration) |

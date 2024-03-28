@@ -41,7 +41,5 @@ Selecting this option renders the chart based on live data. In this case the San
 | Add Layer       | Adds a new layer to the Sankey chart widget. At least **one layer is mandatory**. You can append more layers or even delete a layer. You can have a maximum of **three** layers.<br /> **NOTE**: The target node of the previous layer becomes the source node for the next layer. |
 
 
-
-
 | [Usage](./usage.md) |
 | ------------------- |
