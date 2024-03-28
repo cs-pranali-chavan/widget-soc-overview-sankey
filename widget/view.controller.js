@@ -423,7 +423,7 @@
           else{
             return d.x0 - 108
           }
-        })//("x", d => d.x0 - 58) // d.x0 - 6)// 
+        })
         .attr("y", d => (d.y0 + d.y1) / 2)
         .attr("width", function(d){
           if(d.layer === 0){  //to adjust the node text width as per layer of nodes
@@ -435,7 +435,7 @@
         })
         .attr("height", 50)
         .append("xhtml:div") //add node names
-        .attr("class","truncate padding-left-6")//"truncate padding-left-6")
+        .attr("class","truncate padding-left-6")
         .style("width", "50")
         .style("height", "20")
         .style("color", textColor)
@@ -443,7 +443,7 @@
         .text(d => {console.log(d); return d.name})
         .attr("title",d => d.name)
         .append("xhtml:div") // add node values
-        .attr("x", d => d.x0) // d.x0 - 6)// 
+        .attr("x", d => d.x0) 
         .attr("dy", 12)
         .style("width", "50")
         .style("height", "20")
