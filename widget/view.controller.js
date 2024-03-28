@@ -421,7 +421,7 @@
         .attr("width", 50)
         .attr("height", 50)
         .append("xhtml:div") //add node names
-        .attr("class", "truncate")
+        .attr("class", "truncate padding-left-6")
         .style("width", "50")
         .style("height", "20")
         .style("color", textColor)
