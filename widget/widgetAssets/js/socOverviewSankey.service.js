@@ -9,16 +9,18 @@
           .module('cybersponse')
           .factory('socOverviewSankeyService', socOverviewSankeyService);
   
-      socOverviewSankeyService.$inject = ['$q', '$http', 'currentDateMinusService', 'Query', 'API'];
+      socOverviewSankeyService.$inject = ['$q', '$http', 'currentDateMinusService', 'Query', 'API', 'Entity'];
   
-      function socOverviewSankeyService($q, $http, currentDateMinusService, Query, API) {
+      function socOverviewSankeyService($q, $http, currentDateMinusService, Query, API, Entity) {
           var service;
           var config;
   
           service = {
               getResourceAggregate: getResourceAggregate,
               loadJs: loadJs,
-              getRandomDarkColor: getRandomDarkColor
+              getRandomDarkColor: getRandomDarkColor,
+              fetchKeysWithPattern: fetchKeysWithPattern,
+              hasNonZeroValue: hasNonZeroValue
           };
   
           // Load External JS Files
@@ -38,130 +40,122 @@
           function getResourceAggregate(_config, _duration) {
               config = _config;
               var duration = _duration;
+              var recordSize = config.recordSize;
               var defer = $q.defer();
-              var dataFilters = getFilters(duration);
-              var queryObject = {
-                  sort: [{
-                      field: 'total',
-                      direction: 'DESC'
-                  }],
-                  aggregates: [
-                      {
-                          'operator': 'countdistinct',
-                          'field': '*',
-                          'alias': 'total'
-                      }
-                  ],
-                  relationship: true,
-                  filters: [dataFilters]
-              };
               var elementIndex = 0;
-              for (var i = 0; i < config.layers.length; i++) {
-                  let currentLayer = config.layers[i];
-                  //if - else to check if it is the 1st layer or not
-                  if (currentLayer['sourceNodesField'] !== '') {
+              var _resource = config.resource;
+              var _allQuery = [];
+              var previousLayer = null;
+              for (var id = 0; id < config.layers.length; id++) {
+                  var queryObject = {
+                      sort: [{
+                          field: 'total',
+                          direction: 'DESC'
+                      }],
+                      aggregates: [
+                          {
+                              'operator': 'count',
+                              'field': '*',
+                              'alias': 'total'
+                          }
+                      ],
+                      relationship: true
+                  };
+                  let currentLayer = config.layers[id];
+                  _resource = currentLayer['sourceNodeModule'];
+                  //create aggregate for source
+                  if (currentLayer['sourceNodeModule']) {
                       queryObject.aggregates.push({
                           'operator': 'groupby',
-                          'alias': 'series_' + elementIndex,
-                          'field': currentLayer['sourceNodesField']
+                          'alias': 'series_' + id,
+                          'field': currentLayer['sourceNodeType'] === 'picklist' ? currentLayer['sourceNode'] + '.itemValue' : currentLayer['sourceNode'] // picklist check added in source node 
                       });
-                      if (currentLayer['targetNodeSubField'] === '') {
-                          elementIndex++;
-                          pushTargetNodes(queryObject, elementIndex, currentLayer);
-                      } else {
-                          elementIndex++;
-                          pushTargetSubNodes(queryObject, elementIndex, currentLayer);
-                      }
-                  } else {
-                      //var prev = i-1;
                       elementIndex++;
-                      if (currentLayer['targetNodeSubField'] === '') {
-                          pushTargetNodes(queryObject, elementIndex, currentLayer);
-                      } else {
-                          pushTargetSubNodes(queryObject, elementIndex, currentLayer);
-                      }
                   }
-              };
+                  //create aggregate for target
+                  if (currentLayer['targetNodeField'] === null) {
+                      pushTarget(queryObject, elementIndex, currentLayer);
+                  }
+                  else {
+                      pushTargetField(queryObject, elementIndex, currentLayer);
+                  }
   
-              var _queryObj = new Query(queryObject);
-              $http.post(API.QUERY + config.resource, _queryObj.getQuery(true)).then(function (response) {
-                  defer.resolve(response.data);
-              }, function (error) {
-                  defer.reject(error);
-              });
-  
+                  var dataFilters = getFilters(duration, _resource);
+                  queryObject["filters"] = [dataFilters];
+                  var _queryObj = new Query(queryObject);
+                  _allQuery.push(
+                      $http.post(API.QUERY + _resource + '?$limit=' + recordSize, _queryObj.getQuery(true)).then(function (response) {
+                          return response;
+                          //defer.resolve(response.data);
+                      }, function (error) {
+                          // defer.reject(error);
+                      })
+                  )
+                  previousLayer = currentLayer;
+              }
+              $q.all(_allQuery).then(function (response) {
+                  defer.resolve(response);
+                  //console.log(response)
+              })
               return defer.promise;
+  
           }
   
-          function pushTargetNodes(queryObject, elementIndex, currentLayer) {
+          // push target nodes if target node is selected and doesnt have sub field selected
+          function pushTarget(queryObject, elementIndex, currentLayer) {
               queryObject.aggregates.push({
                   'operator': 'groupby',
                   'alias': 'series_' + elementIndex,
-                  'field': currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.itemValue' : currentLayer['targetNodeField']
+                  'field': currentLayer['targetNodeType'] === 'picklist' ? currentLayer['targetNode'] + '.itemValue' : currentLayer['targetNode']
               });
-              if (currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany') {
+              if (currentLayer['targetNodeType'] === 'picklist') {
                   queryObject.aggregates.push({
                       'operator': 'groupby',
-                      'alias': 'series_' + elementIndex + '_color',
-                      'field': currentLayer['targetNodeField'] + '.color'
+                      'alias': 'color_series_' + elementIndex,
+                      'field': currentLayer['targetNode'] + '.color'
                   });
               }
-  
           }
   
-          function pushTargetSubNodes(queryObject, elementIndex, currentLayer) {
-            queryObject.aggregates.push({
-                'operator': 'groupby',
-                'alias': 'series_' + elementIndex,
-                'field': currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeField'].currentLayer['targetNodeSubField']
-            });
-            if (currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany') {
-                queryObject.aggregates.push({
-                    'operator': 'groupby',
-                    'alias': 'series_' + elementIndex + '_color',
-                    'field': currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.color'
-                });
-            }
-        }
-
-
-        function getFilters(duration) {
-            let frontFilter = {};
-            frontFilter.filters = [];
-            for (var i = 0; i < config.layers.length; i++) {
-                let currentLayer = config.layers[i];
-                let _nullField = '';
-                if(currentLayer['targetNodeSubField'] !== ''){
-                    _nullField = currentLayer['targetNodeSubType'] === 'picklist' || currentLayer['targetNodeSubType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.' + currentLayer['targetNodeSubField'] + '.itemValue' : currentLayer['targetNodeField'].currentLayer['targetNodeSubField'];
-                }
-                else{
-                    _nullField = currentLayer['targetNodeType'] === 'picklist' || currentLayer['targetNodeType'] === 'manyToMany' ? currentLayer['targetNodeField'] + '.itemValue' : currentLayer['targetNodeField'];
-                }                
-                frontFilter.filters.push({
-                    field: _nullField,
-                    operator: 'isnull',
-                    value: false
-                });
-            }
-            frontFilter.logic = 'AND';
-            if (config.entityTrackable) {
-                frontFilter.filters.push({
-                    field: 'createDate',
-                    operator: 'gte',
-                    value: currentDateMinusService(duration),
-                    type: 'datetime'
-                });
-            }
-            
-            let dataFilters = config.filters ? angular.copy(config.filters) : {};
-            if (dataFilters.filters) {
-                dataFilters.filters.push(frontFilter);
-            } else {
-                dataFilters = frontFilter;
-            }
-            return dataFilters;
-        }
+          // push sub target nodes if target node is manyToMany and sub field is selected
+          function pushTargetField(queryObject, elementIndex, currentLayer) {
+              queryObject.aggregates.push({
+                  'operator': 'groupby',
+                  'alias': 'series_' + elementIndex,
+                  'field': currentLayer['targetNodeFieldType'] === 'picklist' ? currentLayer['targetNode'] + '.' + currentLayer['targetNodeField'] + '.itemValue' : currentLayer['targetNode'] + '.' + currentLayer['targetNodeField']
+              });
+              if (currentLayer['targetNodeFieldType'] === 'picklist') {
+                  queryObject.aggregates.push({
+                      'operator': 'groupby',
+                      'alias': 'color_series_' + elementIndex,
+                      'field': currentLayer['targetNode'] + '.' + currentLayer['targetNodeField'] + '.color'
+                  });
+              }
+          }
   
+          function getFilters(duration, _resource) {
+              let frontFilter = {};
+              frontFilter.logic = 'AND';
+              let isEntityTrackable = checkIfEntityIsTrackable(_resource);
+              if (isEntityTrackable) {
+                  frontFilter.filters = [{
+                      field: 'createDate',
+                      operator: 'gte',
+                      value: currentDateMinusService(duration),
+                      type: 'datetime'
+                  }];
+              }
+  
+              let dataFilters = config.query.filters ? angular.copy(config.query.filters) : {};
+              if (dataFilters.filters) {
+                  dataFilters.filters.push(frontFilter);
+              } else {
+                  dataFilters = frontFilter;
+              }
+              return dataFilters;
+          }
+  
+          //create random colors for nodes and links if the picklist/field has no color assigned
           function getRandomDarkColor() {
               var red = Math.floor(Math.random() * 256); // Random value for red channel (0-255)
               var green = Math.floor(Math.random() * 256); // Random value for green channel (0-255)
@@ -173,10 +167,42 @@
                   green = Math.floor(Math.random() * 256);
                   blue = Math.floor(Math.random() * 256);
               }
-  
               return 'rgb(' + red + ', ' + green + ', ' + blue + ')';
           }
   
+          //return array with specified pattern(series_)
+          function fetchKeysWithPattern(array, pattern) {
+              let keys = new Set(); // Using Set to ensure unique keys
+              // Iterate over each object in the array
+              array.forEach(obj => {
+                  // Get the keys of the current object
+                  let objKeys = Object.keys(obj);
+                  // Filter keys based on the pattern
+                  let filteredKeys = objKeys.filter(key => key.startsWith(pattern));
+                  // Add filtered keys to the Set
+                  filteredKeys.forEach(key => {
+                      keys.add(key);
+                  });
+              });
+  
+              // Convert Set to array and return
+              return Array.from(keys);
+          }
+  
+          function checkIfEntityIsTrackable(_entity) {
+              var isTrackable = false;
+              var entity = new Entity(_entity);
+              entity.loadFields().then(function () {
+                  isTrackable = entity.trackable;
+              });
+              return isTrackable;
+          }
+  
+          // Function to check if any value in the array is not zero
+          function hasNonZeroValue(arr) {
+              return arr.some(obj => obj.value !== 0);
+          }
           return service;
       }
-  })();  
+  })();
+  
