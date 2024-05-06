@@ -75,6 +75,7 @@
         links = [];
         chartData = {};
         nodeColorMap = [];
+        nodesMap = [];
       }
   
       // Refresh Sankey Chart
